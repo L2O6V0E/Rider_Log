@@ -20,6 +20,7 @@
       padding: 8px;
       display: flex;
       justify-content: center;
+      font-size: 1.05rem;
     }
 
     .card {
@@ -27,12 +28,12 @@
       max-width: 420px;
       background: #ffffff;
       border-radius: 16px;
-      padding: 12px;
+      padding: 14px;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
     }
 
     .header-area {
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .header-top-row {
@@ -42,13 +43,13 @@
     }
 
     h1 {
-      font-size: 1.25rem;
+      font-size: 1.6rem;
       font-weight: 700;
       margin-bottom: 2px;
     }
 
     .sub {
-      font-size: 0.75rem;
+      font-size: 0.95rem;
       color: #666;
     }
 
@@ -57,26 +58,38 @@
       font-weight: 600;
     }
 
-    .btn-excel-header {
+    .header-btns {
+      display: flex;
+      gap: 4px;
+    }
+
+    .btn-excel-header, .btn-lang-header {
       background-color: #e8f5e9;
       color: #2e7d32;
       border: 1px solid #c8e6c9;
       border-radius: 8px;
       padding: 4px 10px;
-      font-size: 0.75rem;
+      font-size: 0.9rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 4px;
-      height: 32px;
+      height: 38px;
+      white-space: nowrap;
+    }
+
+    .btn-lang-header {
+      background-color: #e3f2fd;
+      color: #1565c0;
+      border-color: #bbdefb;
     }
 
     .btn-grid-group {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 6px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .btn {
@@ -86,9 +99,9 @@
       justify-content: center;
       gap: 4px;
       width: 100%;
-      height: 38px;
+      height: 44px;
       padding: 4px;
-      font-size: 0.75rem;
+      font-size: 0.95rem;
       font-weight: 600;
       border-radius: 10px;
       border: none;
@@ -105,7 +118,7 @@
     }
 
     .btn .icon {
-      font-size: 1rem;
+      font-size: 1.2rem;
     }
 
     .btn-start { background-color: #e8f5e9; color: #2e7d32; }
@@ -117,18 +130,19 @@
 
     .btn-back {
       width: auto;
-      height: 32px;
-      padding: 0 12px;
+      height: 38px;
+      padding: 0 14px;
       background-color: #eee;
       color: #333;
       margin-bottom: 10px;
+      font-size: 0.95rem;
     }
 
     .status-box {
       background-color: #f8f9fa;
       border-radius: 10px;
-      padding: 8px 10px;
-      margin-bottom: 6px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
       border: 1px solid #edf0f2;
     }
 
@@ -136,14 +150,15 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      margin-bottom: 2px;
+      margin-bottom: 4px;
     }
 
     .info-title {
-      font-size: 0.7rem;
-      color: #777;
+      font-size: 0.92rem;
+      color: #666;
       margin-top: 2px;
       white-space: nowrap;
+      font-weight: 500;
     }
 
     .info-title:first-child {
@@ -151,15 +166,15 @@
     }
 
     .info-value {
-      font-size: 0.9rem;
-      font-weight: 600;
+      font-size: 1.15rem;
+      font-weight: 700;
     }
 
     .info-value-sm {
-      font-size: 0.8rem;
+      font-size: 1.02rem;
       font-weight: 600;
-      margin-top: 2px;
-      line-height: 1.15;
+      margin-top: 3px;
+      line-height: 1.3;
       word-break: keep-all;
     }
 
@@ -200,16 +215,16 @@
       border: 1px solid #ddd;
       border-radius: 6px;
       padding: 1px 3px;
-      height: 32px;
+      height: 38px;
     }
 
     .count-btn {
-      width: 22px;
-      height: 24px;
+      width: 28px;
+      height: 30px;
       border-radius: 4px;
       border: none;
       background: #f0f0f0;
-      font-size: 0.85rem;
+      font-size: 1.1rem;
       font-weight: bold;
       cursor: pointer;
       display: flex;
@@ -225,7 +240,7 @@
       background: #e8f5e9;
       border: 1px solid #c8e6c9;
       border-radius: 6px;
-      height: 32px;
+      height: 38px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -234,7 +249,7 @@
     .total-income-box span {
       font-weight: 700;
       color: #2e7d32;
-      font-size: 0.8rem;
+      font-size: 1.05rem;
     }
 
     .platform-baemin { border-bottom: 2px solid #00c73c; }
@@ -246,12 +261,12 @@
     select,
     textarea {
       width: 100%;
-      padding: 4px 2px;
+      padding: 4px 6px;
       margin-top: 2px;
       border: 1px solid #ddd;
       border-radius: 6px;
-      font-size: 0.8rem;
-      height: 32px;
+      font-size: 1.02rem;
+      height: 38px;
       text-align: center;
     }
 
@@ -260,13 +275,14 @@
     }
 
     textarea {
-      height: 50px;
+      height: 65px;
       text-align: left;
       padding: 6px;
+      font-size: 1.02rem;
     }
 
     input[type="number"]::placeholder {
-      font-size: 0.7rem;
+      font-size: 0.9rem;
     }
 
     .input-with-cam {
@@ -284,12 +300,12 @@
     }
 
     .btn-cam-icon {
-      width: 32px;
-      height: 32px;
+      width: 38px;
+      height: 38px;
       background: #ffffff;
       border: 1px solid #ddd;
       border-radius: 6px;
-      font-size: 0.9rem;
+      font-size: 1.15rem;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -315,7 +331,7 @@
 
     .photo-preview-img {
       width: 100%;
-      max-height: 80px;
+      max-height: 100px;
       object-fit: cover;
       border-radius: 6px;
       border: 1px solid #ccc;
@@ -325,32 +341,32 @@
       background: #fff;
       border: 1px solid #eee;
       border-radius: 8px;
-      padding: 8px;
-      margin-bottom: 6px;
+      padding: 10px;
+      margin-bottom: 8px;
     }
 
     .history-header-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 2px;
+      margin-bottom: 4px;
     }
 
     .history-date {
       font-weight: bold;
-      font-size: 0.8rem;
+      font-size: 1.02rem;
     }
 
     .history-text {
-      font-size: 0.75rem;
-      color: #555;
+      font-size: 0.98rem;
+      color: #444;
     }
 
     .history-detail-link {
       background: none;
       border: none;
       color: #1565c0;
-      font-size: 0.75rem;
+      font-size: 0.95rem;
       font-weight: 600;
       cursor: pointer;
       padding: 2px 4px;
@@ -363,17 +379,18 @@
     .period-buttons {
       display: flex;
       gap: 4px;
-      margin-top: 4px;
+      margin-top: 6px;
     }
 
     .period-btn {
       flex: 1;
-      padding: 4px 0;
+      padding: 7px 0;
       border-radius: 6px;
       border: 1px solid #ddd;
       background: #fff;
-      font-size: 0.7rem;
+      font-size: 0.92rem;
       cursor: pointer;
+      font-weight: 500;
     }
 
     .period-btn.active {
@@ -384,9 +401,9 @@
 
     .footer {
       text-align: center;
-      font-size: 0.7rem;
+      font-size: 0.9rem;
       color: #aaa;
-      margin-top: 8px;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -398,57 +415,60 @@
       <header class="header-area">
         <div class="header-top-row">
           <h1>🏍 RiderLog</h1>
-          <button id="excelExportBtn" class="btn-excel-header" type="button">📊 엑셀 다운</button>
+          <div class="header-btns">
+            <button id="langToggleBtn" class="btn-lang-header" type="button">🌐 EN</button>
+            <button id="excelExportBtn" class="btn-excel-header" type="button">📊 <span data-i18n="excel">엑셀 다운</span></button>
+          </div>
         </div>
-        <p class="sub">배달 기록 및 계기판 관리 <span id="historyCountText">(저장된 기록: 0건)</span></p>
+        <p class="sub"><span data-i18n="subTitle">기록 및 관리</span> <span id="historyCountText">(저장된 기록: 0건)</span></p>
       </header>
 
       <div class="btn-grid-group">
         <button id="startBtn" class="btn btn-start">
           <span class="icon">🚀</span>
-          <span>배달 시작</span>
+          <span data-i18n="start">시작</span>
         </button>
         <button id="endBtn" class="btn btn-end">
           <span class="icon">🏁</span>
-          <span>배달 종료</span>
+          <span data-i18n="end">종료</span>
         </button>
         <button id="summaryBtn" class="btn btn-summary">
           <span class="icon">📊</span>
-          <span>오늘 정산</span>
+          <span data-i18n="summary">정산</span>
         </button>
         <button id="historyBtn" class="btn btn-history">
           <span class="icon">📚</span>
-          <span>운행 기록</span>
+          <span data-i18n="history">기록</span>
         </button>
         <button id="inputBtn" class="btn btn-input">
           <span class="icon">📝</span>
-          <span>오늘 입력</span>
+          <span data-i18n="input">입력</span>
         </button>
         <button id="expenseBtn" class="btn btn-expense">
           <span class="icon">⛽</span>
-          <span>운행 비용</span>
+          <span data-i18n="expense">비용</span>
         </button>
       </div>
 
       <section class="status-box">
         <div class="status-header">
-          <span class="info-title">상태:</span>
+          <span class="info-title" data-i18n="statusLabel">상태:</span>
           <span class="info-value" id="status">🟡 대기 중</span>
         </div>
 
         <div class="row-inputs">
           <div class="row-item text-center">
-            <p class="info-title">시작 시간</p>
+            <p class="info-title" data-i18n="startTime">시작 시간</p>
             <p class="info-value-sm" id="startTime">-</p>
           </div>
 
           <div class="row-item text-center">
-            <p class="info-title">종료 시간</p>
+            <p class="info-title" data-i18n="endTime">종료 시간</p>
             <p class="info-value-sm" id="endTime">-</p>
           </div>
 
           <div class="row-item text-center">
-            <p class="info-title">운행 시간</p>
+            <p class="info-title" data-i18n="elapsedTime">소요 시간</p>
             <p class="info-value-sm" id="rideTime">-</p>
           </div>
         </div>
@@ -457,7 +477,7 @@
       <section class="status-box">
         <div class="row-inputs">
           <div class="row-item">
-            <label class="info-title" for="startOdometer">시작 계기판 (km)</label>
+            <label class="info-title" for="startOdometer" data-i18n="startOdo">시작 계기판 (km)</label>
             <div class="input-with-cam">
               <input id="startOdometer" type="number" min="0" step="0.1" placeholder="예: 12500">
               <input type="file" id="startPhotoInput" accept="image/*" capture="camera" hidden>
@@ -467,7 +487,7 @@
           </div>
 
           <div class="row-item">
-            <label class="info-title" for="endOdometer">종료 계기판 (km)</label>
+            <label class="info-title" for="endOdometer" data-i18n="endOdo">종료 계기판 (km)</label>
             <div class="input-with-cam">
               <input id="endOdometer" type="number" min="0" step="0.1" placeholder="예: 12538">
               <input type="file" id="endPhotoInput" accept="image/*" capture="camera" hidden>
@@ -481,40 +501,40 @@
       <section class="status-box">
         <div class="row-inputs align-end">
           <div class="row-item">
-            <p class="info-title">배달 건수</p>
+            <p class="info-title" data-i18n="count">건수</p>
             <div class="count-area">
               <button id="minusBtn" class="count-btn" type="button">−</button>
-              <strong id="deliveryCount">0</strong>
+              <strong id="deliveryCount" style="font-size: 1.1rem;">0</strong>
               <button id="plusBtn" class="count-btn" type="button">+</button>
             </div>
           </div>
 
           <div class="row-item">
-            <label class="info-title" for="distance">주행거리 (km)</label>
+            <label class="info-title" for="distance" data-i18n="distance">거리 (km)</label>
             <input id="distance" type="number" readonly placeholder="자동계산">
           </div>
 
           <div class="row-item">
-            <p class="info-title">총 수입</p>
+            <p class="info-title" data-i18n="totalIncome">총수입</p>
             <div class="total-income-box">
               <span id="totalIncomeDisplay">0원</span>
             </div>
           </div>
         </div>
 
-        <div class="row-inputs" style="margin-top: 6px;">
+        <div class="row-inputs" style="margin-top: 8px;">
           <div class="row-item platform-baemin">
-            <label class="info-title" for="baeminIncome">🛵 배민 (원)</label>
+            <label class="info-title" for="baeminIncome">🛵 배민</label>
             <input id="baeminIncome" type="number" min="0" placeholder="0">
           </div>
 
           <div class="row-item platform-mission">
-            <label class="info-title" for="missionIncome">🎯 미션 (원)</label>
+            <label class="info-title" for="missionIncome">🎯 미션</label>
             <input id="missionIncome" type="number" min="0" placeholder="0">
           </div>
 
           <div class="row-item platform-coupang">
-            <label class="info-title" for="coupangIncome">🚀 쿠팡 (원)</label>
+            <label class="info-title" for="coupangIncome">🚀 쿠팡</label>
             <input id="coupangIncome" type="number" min="0" placeholder="0">
           </div>
         </div>
@@ -523,17 +543,17 @@
       <section class="status-box">
         <div class="row-inputs">
           <div class="row-item text-center">
-            <p class="info-title">평균 단가</p>
+            <p class="info-title" data-i18n="avgPrice">평균 단가</p>
             <p class="info-value-sm" id="avgPrice">0원</p>
           </div>
 
           <div class="row-item text-center">
-            <p class="info-title">시급</p>
+            <p class="info-title" data-i18n="hourly">시급</p>
             <p class="info-value-sm" id="hourPay">0원</p>
           </div>
 
           <div class="row-item text-center">
-            <p class="info-title">km당 수입</p>
+            <p class="info-title" data-i18n="perKm">km당 수입</p>
             <p class="info-value-sm" id="kmPay">0원</p>
           </div>
         </div>
@@ -542,25 +562,23 @@
 
     <!-- 히스토리 화면 -->
     <section id="historyPage" hidden>
-      <!-- 운행 기록 메인 보기 영역 -->
       <div id="historyMainView">
-        <button class="btn btn-back back-to-main">← 메인으로</button>
+        <button class="btn btn-back back-to-main" data-i18n="backMain">← 메인으로</button>
 
-        <!-- 배달 기록 추가 영역 -->
         <section class="status-box">
-          <p class="info-title" style="font-weight: bold; color: #333; margin-bottom: 6px;">➕ 배달 기록 추가</p>
+          <p class="info-title" style="font-weight: bold; color: #333; margin-bottom: 6px; font-size: 1rem;" data-i18n="addRecord">➕ 기록 추가</p>
 
           <div class="row-inputs align-end">
             <div class="row-item">
-              <label class="info-title" for="manualDate">날짜</label>
+              <label class="info-title" for="manualDate" data-i18n="date">날짜</label>
               <input id="manualDate" type="date">
             </div>
             <div class="row-item">
-              <label class="info-title" for="manualRideMinutes">운행 시간(분)</label>
+              <label class="info-title" for="manualRideMinutes" data-i18n="timeMin">시간(분)</label>
               <input id="manualRideMinutes" type="number" min="0" placeholder="예: 180">
             </div>
             <div class="row-item">
-              <button id="saveManualHistoryBtn" class="btn btn-start" type="button" style="width:100%; height:32px; margin-top:2px;">💾 기록 저장</button>
+              <button id="saveManualHistoryBtn" class="btn btn-start" type="button" style="width:100%; height:38px; margin-top:2px; font-size:0.95rem;" data-i18n="saveRecord">💾 저장하기</button>
             </div>
           </div>
 
@@ -571,10 +589,10 @@
                 <input id="manualBaeminCount" type="number" min="0" placeholder="건수">
               </div>
               <div class="row-item">
-                <input id="manualBaeminIncome" type="number" min="0" placeholder="수입 (원)">
+                <input id="manualBaeminIncome" type="number" min="0" placeholder="수입">
               </div>
               <div class="row-item">
-                <input id="manualBaeminMission" type="number" min="0" placeholder="미션 (원)">
+                <input id="manualBaeminMission" type="number" min="0" placeholder="미션">
               </div>
             </div>
           </div>
@@ -586,50 +604,50 @@
                 <input id="manualCoupangCount" type="number" min="0" placeholder="건수">
               </div>
               <div class="row-item">
-                <input id="manualCoupangIncome" type="number" min="0" placeholder="수입 (원)">
+                <input id="manualCoupangIncome" type="number" min="0" placeholder="수입">
               </div>
               <div class="row-item">
-                <input id="manualCoupangMission" type="number" min="0" placeholder="미션 (원)">
+                <input id="manualCoupangMission" type="number" min="0" placeholder="미션">
               </div>
             </div>
           </div>
 
           <div class="row-inputs" style="margin-top: 6px;">
             <div class="row-item">
-              <label class="info-title" for="manualStartOdometer">시작 (km)</label>
-              <input id="manualStartOdometer" type="number" min="0" step="0.1" placeholder="예: 12500">
+              <label class="info-title" for="manualStartOdometer" data-i18n="start">시작</label>
+              <input id="manualStartOdometer" type="number" min="0" step="0.1" placeholder="시작 거리">
             </div>
             <div class="row-item">
-              <label class="info-title" for="manualEndOdometer">종료 (km)</label>
-              <input id="manualEndOdometer" type="number" min="0" step="0.1" placeholder="예: 12538">
+              <label class="info-title" for="manualEndOdometer" data-i18n="end">종료</label>
+              <input id="manualEndOdometer" type="number" min="0" step="0.1" placeholder="종료 거리">
             </div>
             <div class="row-item">
-              <label class="info-title" for="manualDistance">주행거리 (km)</label>
+              <label class="info-title" for="manualDistance" data-i18n="distance">거리</label>
               <input id="manualDistance" type="number" readonly placeholder="자동계산">
             </div>
           </div>
         </section>
 
         <section class="status-box">
-          <p class="info-title">📅 통계 기간</p>
+          <p class="info-title" data-i18n="periodSelection">📅 기간 선택</p>
           <div class="period-buttons">
-            <button class="period-btn" data-period="today" type="button">오늘</button>
-            <button class="period-btn" data-period="week" type="button">이번 주</button>
-            <button class="period-btn" data-period="month" type="button">이번 달</button>
-            <button class="period-btn active" data-period="all" type="button">전체</button>
+            <button class="period-btn" data-period="today" type="button" data-i18n="today">오늘</button>
+            <button class="period-btn" data-period="week" type="button" data-i18n="week">이번 주</button>
+            <button class="period-btn" data-period="month" type="button" data-i18n="month">이번 달</button>
+            <button class="period-btn active" data-period="all" type="button" data-i18n="all">전체</button>
           </div>
         </section>
 
         <section class="status-box">
-          <p class="info-title">📊 선택 기간 통계</p>
-          <p class="info-title">총 배달 / 총 수입</p>
+          <p class="info-title" data-i18n="selectedStats">📊 선택 통계</p>
+          <p class="info-title" data-i18n="totalCountIncome">총 건수 / 총 수입</p>
           <p class="info-value"><span id="totalDelivery">0건</span> / <span id="totalIncome">0원</span></p>
 
-          <p class="info-title" style="margin-top:6px;">총 거리 / km당 단가 / 평균 단가 / 시급</p>
+          <p class="info-title" style="margin-top:6px;" data-i18n="statsSubLine">총 거리 / km당 단가 / 평균 단가 / 시급</p>
           <p class="info-value-sm"><span id="totalDistance">0km</span> | km당 <span id="totalKmPay">0원</span> | 단가 <span id="totalAvg">0원</span> | 시급 <span id="totalHourPay">0원</span></p>
 
           <div style="margin-top: 8px;">
-            <button id="showStatDetailBtn" class="detail-btn" type="button" style="padding:4px 8px; border-radius:4px; border:none; font-size:0.7rem; cursor:pointer; background:#e3f2fd; color:#1565c0;">상세 보기</button>
+            <button id="showStatDetailBtn" class="detail-btn" type="button" style="padding:6px 12px; border-radius:4px; border:none; font-size:0.92rem; cursor:pointer; background:#e3f2fd; color:#1565c0; font-weight: 600;" data-i18n="viewDetails">상세 보기</button>
           </div>
 
           <div id="statDetailInlineArea" style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #ddd;" hidden>
@@ -638,16 +656,15 @@
         </section>
 
         <section class="status-box">
-          <p class="info-title">📚 배달 기록</p>
+          <p class="info-title" data-i18n="savedRecords">📚 저장된 목록</p>
           <div id="historyList"></div>
         </section>
       </div>
 
-      <!-- 배달 기록 상세 정보 영역 -->
       <section id="detailArea" class="status-box" hidden>
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-          <p class="info-title" id="detailHeaderTitle" style="font-size: 1rem; font-weight: bold; color: #333;">🔎 상세 정보</p>
-          <button id="closeDetailBtn" class="btn btn-back" style="margin-bottom:0; height:28px; padding:0 10px;">🔙 닫기</button>
+          <p class="info-title" id="detailHeaderTitle" style="font-size: 1.15rem; font-weight: bold; color: #333;" data-i18n="details">🔎 상세 정보</p>
+          <button id="closeDetailBtn" class="btn btn-back" style="margin-bottom:0; height:34px; padding:0 12px; font-size:0.95rem;" data-i18n="close">🔙 닫기</button>
         </div>
         <div id="detailContent"></div>
       </section>
@@ -655,45 +672,45 @@
 
     <!-- 입력 준비 화면 -->
     <section id="inputPage" hidden>
-      <button class="btn btn-back back-to-main">← 메인으로</button>
+      <button class="btn btn-back back-to-main" data-i18n="backMain">← 메인으로</button>
       <section class="status-box">
-        <p class="info-title">📝 오늘 운행 입력</p>
-        <p class="info-title">※ RiderLog 0.4 준비 화면입니다.</p>
+        <p class="info-title" style="font-size: 1rem;" data-i18n="inputTitle">📝 입력</p>
+        <p class="info-title" data-i18n="inputDesc">※ 준비 화면입니다.</p>
       </section>
     </section>
 
     <!-- 운행 비용 화면 -->
     <section id="expensePage" hidden>
-      <button class="btn btn-back back-to-main">← 메인으로</button>
+      <button class="btn btn-back back-to-main" data-i18n="backMain">← 메인으로</button>
 
       <section class="status-box">
-        <p class="info-title">⛽ 운행 비용 기록</p>
+        <p class="info-title" style="font-size: 1rem; font-weight: bold; margin-bottom: 6px;" data-i18n="expenseRecord">⛽ 비용 기록</p>
 
-        <label class="info-title" for="expenseDate">날짜</label>
+        <label class="info-title" for="expenseDate" data-i18n="date">날짜</label>
         <input id="expenseDate" type="date">
 
-        <label class="info-title" for="expenseCategory" style="margin-top:6px;">비용 항목</label>
+        <label class="info-title" for="expenseCategory" style="margin-top:6px;" data-i18n="category">항목</label>
         <select id="expenseCategory">
-          <option value="주유">주유</option>
-          <option value="보험">보험</option>
-          <option value="정비">정비</option>
-          <option value="기타">기타</option>
+          <option value="주유" data-i18n="catFuel">주유</option>
+          <option value="보험" data-i18n="catInsurance">보험</option>
+          <option value="정비" data-i18n="catMaintenance">정비</option>
+          <option value="기타" data-i18n="catEtc">기타</option>
         </select>
 
-        <label class="info-title" for="expenseAmount" style="margin-top:6px;">비용 (원)</label>
+        <label class="info-title" for="expenseAmount" style="margin-top:6px;" data-i18n="amount">금액 (원)</label>
         <input id="expenseAmount" type="number" min="0" placeholder="0">
 
-        <label class="info-title" for="expenseMileage" style="margin-top:6px;">주행거리 (km)</label>
+        <label class="info-title" for="expenseMileage" style="margin-top:6px;" data-i18n="mileage">거리 (km)</label>
         <input id="expenseMileage" type="number" min="0" step="0.1" placeholder="예: 12500">
 
-        <label class="info-title" for="expenseMemo" style="margin-top:6px;">메모</label>
-        <textarea id="expenseMemo" placeholder="예: 엔진오일 교체"></textarea>
+        <label class="info-title" for="expenseMemo" style="margin-top:6px;" data-i18n="memo">메모</label>
+        <textarea id="expenseMemo" placeholder="메모 입력"></textarea>
 
-        <button id="saveExpenseBtn" class="btn btn-start" type="button" style="margin-top:8px; width:100%; aspect-ratio:auto; padding:10px;">비용 저장</button>
+        <button id="saveExpenseBtn" class="btn btn-start" type="button" style="margin-top:10px; width:100%; aspect-ratio:auto; padding:10px; height: 44px; font-size: 1rem;" data-i18n="saveExpense">비용 저장</button>
       </section>
 
       <section class="status-box">
-        <p class="info-title">📋 운행 비용 목록</p>
+        <p class="info-title" data-i18n="expenseHistory">📋 비용 내역</p>
         <div id="expenseList"></div>
       </section>
     </section>
@@ -702,6 +719,142 @@
   </div>
 
   <script>
+    // ------------------------------------
+    // 다국어 딕셔너리
+    // ------------------------------------
+    let currentLang = "ko"; // 기본값 한국어
+    const i18nData = {
+      ko: {
+        excel: "엑셀 다운",
+        subTitle: "기록 및 관리",
+        start: "시작",
+        end: "종료",
+        summary: "정산",
+        history: "기록",
+        input: "입력",
+        expense: "비용",
+        statusLabel: "상태:",
+        statusReady: "🟡 대기 중",
+        statusRunning: "🟢 진행 중",
+        statusEnded: "🔴 종료됨",
+        startTime: "시작 시간",
+        endTime: "종료 시간",
+        elapsedTime: "소요 시간",
+        startOdo: "시작 계기판 (km)",
+        endOdo: "종료 계기판 (km)",
+        count: "건수",
+        distance: "거리 (km)",
+        totalIncome: "총수입",
+        avgPrice: "평균 단가",
+        hourly: "시급",
+        perKm: "km당 수입",
+        backMain: "← 메인으로",
+        addRecord: "➕ 기록 추가",
+        date: "날짜",
+        timeMin: "시간(분)",
+        saveRecord: "💾 저장하기",
+        periodSelection: "📅 기간 선택",
+        today: "오늘",
+        week: "이번 주",
+        month: "이번 달",
+        all: "전체",
+        selectedStats: "📊 선택 통계",
+        totalCountIncome: "총 건수 / 총 수입",
+        statsSubLine: "총 거리 / km당 단가 / 평균 단가 / 시급",
+        viewDetails: "상세 보기",
+        savedRecords: "📚 저장된 목록",
+        details: "🔎 상세 정보",
+        close: "🔙 닫기",
+        inputTitle: "📝 입력",
+        inputDesc: "※ 준비 화면입니다.",
+        expenseRecord: "⛽ 비용 기록",
+        category: "항목",
+        catFuel: "주유",
+        catInsurance: "보험",
+        catMaintenance: "정비",
+        catEtc: "기타",
+        amount: "금액 (원)",
+        mileage: "거리 (km)",
+        memo: "메모",
+        saveExpense: "비용 저장",
+        expenseHistory: "📋 비용 내역",
+        savedCountPrefix: "(저장된 기록: ",
+        savedCountSuffix: "건)",
+        autoCalc: "자동계산"
+      },
+      en: {
+        excel: "Export",
+        subTitle: "Records & Management",
+        start: "Start",
+        end: "End",
+        summary: "Summary",
+        history: "History",
+        input: "Input",
+        expense: "Expense",
+        statusLabel: "Status:",
+        statusReady: "🟡 Ready",
+        statusRunning: "🟢 Running",
+        statusEnded: "🔴 Ended",
+        startTime: "Start Time",
+        endTime: "End Time",
+        elapsedTime: "Elapsed",
+        startOdo: "Start Odo (km)",
+        endOdo: "End Odo (km)",
+        count: "Count",
+        distance: "Distance (km)",
+        totalIncome: "Total Inc",
+        avgPrice: "Avg Price",
+        hourly: "Hourly",
+        perKm: "Per km",
+        backMain: "← Back to Main",
+        addRecord: "➕ Add Record",
+        date: "Date",
+        timeMin: "Time (min)",
+        saveRecord: "💾 Save Record",
+        periodSelection: "📅 Period Selection",
+        today: "Today",
+        week: "Week",
+        month: "Month",
+        all: "All",
+        selectedStats: "📊 Statistics",
+        totalCountIncome: "Total Count / Total Income",
+        statsSubLine: "Total Dist / Per km / Avg Price / Hourly",
+        viewDetails: "View Details",
+        savedRecords: "📚 Saved Records",
+        details: "🔎 Details",
+        close: "🔙 Close",
+        inputTitle: "📝 Input",
+        inputDesc: "※ Preparation screen.",
+        expenseRecord: "⛽ Expense Record",
+        category: "Category",
+        catFuel: "Fuel",
+        catInsurance: "Insurance",
+        catMaintenance: "Maintenance",
+        catEtc: "Etc",
+        amount: "Amount (KRW)",
+        mileage: "Mileage (km)",
+        memo: "Memo",
+        saveExpense: "Save Expense",
+        expenseHistory: "📋 Expense History",
+        savedCountPrefix: "(Saved: ",
+        savedCountSuffix: ")",
+        autoCalc: "Auto km"
+      }
+    };
+
+    function t(key) {
+      return i18nData[currentLang][key] || key;
+    }
+
+    function updateTexts() {
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        el.textContent = t(key);
+      });
+      document.getElementById("langToggleBtn").textContent = currentLang === "ko" ? "🌐 EN" : "🌐 KR";
+      updateHistoryCount();
+    }
+
     // ------------------------------------
     // 1. Storage 모듈
     // ------------------------------------
@@ -749,6 +902,9 @@
     // 2. Calculate 및 Utility 모듈
     // ------------------------------------
     function formatWon(value) {
+      if (currentLang === "en") {
+        return `₩${Math.round(value || 0).toLocaleString("ko-KR")}`;
+      }
       return `${Math.round(value || 0).toLocaleString("ko-KR")}원`;
     }
 
@@ -757,6 +913,9 @@
       const h = Math.floor(sec / 3600);
       const m = Math.floor((sec % 3600) / 60);
       const s = sec % 60;
+      if (currentLang === "en") {
+        return `${h}h ${m}m ${s}s`;
+      }
       return `${h}시간 ${m}분 ${s}초`;
     }
 
@@ -771,13 +930,14 @@
       const totalIncome = (Number(baemin) || 0) + (Number(mission) || 0) + (Number(coupang) || 0);
       const distance = calculateOdometerDistance(startOdometer, endOdometer);
 
-      const avgPrice = deliveryCount > 0 ? formatWon(totalIncome / deliveryCount) : "0원";
-      const kmPay = distance > 0 ? formatWon(totalIncome / distance) : "0원";
+      const zeroStr = formatWon(0);
+      const avgPrice = deliveryCount > 0 ? formatWon(totalIncome / deliveryCount) : zeroStr;
+      const kmPay = distance > 0 ? formatWon(totalIncome / distance) : zeroStr;
 
-      let hourPay = "0원";
+      let hourPay = zeroStr;
       if (startDate) {
         const hours = (Date.now() - new Date(startDate).getTime()) / 3600000;
-        hourPay = hours > 0 ? formatWon(totalIncome / hours) : "0원";
+        hourPay = hours > 0 ? formatWon(totalIncome / hours) : zeroStr;
       }
 
       return { totalIncome, distance, avgPrice, hourPay, kmPay };
@@ -803,21 +963,19 @@
       };
     }
 
-    // 종합소득세 비용처리 신고용 엑셀(CSV) 다운로드 함수
     function exportTaxExcel() {
       const history = Storage.get("HISTORY");
       const expenses = Storage.get("EXPENSE");
 
       if (history.length === 0 && expenses.length === 0) {
-        alert("내보낼 데이터가 없습니다.");
+        alert(currentLang === "en" ? "No data to export." : "내보낼 데이터가 없습니다.");
         return;
       }
 
-      let csvContent = "\uFEFF"; // UTF-8 BOM
+      let csvContent = "\uFEFF"; 
 
-      // 1. 배달 운행 기록 섹션
-      csvContent += "=== [배달 운행 기록] ===\n";
-      csvContent += "날짜,운행시간,배달건수,총수입(원),배민수입,배민미션,쿠팡수입,쿠팡미션,시작거리(km),종료거리(km),주행거리(km)\n";
+      csvContent += "=== [Records] ===\n";
+      csvContent += "Date,Time,Count,Income,BaeminInc,BaeminMis,CoupangInc,CoupangMis,StartOdo,EndOdo,Distance\n";
       
       history.forEach(item => {
         const bmInc = item.baeminIncome || item.platforms?.baemin?.income || 0;
@@ -830,21 +988,19 @@
 
       csvContent += "\n";
 
-      // 2. 운행 비용(종합소득세 경비 처리용) 섹션
-      csvContent += "=== [운행 비용 및 경비 내역 (소득세 신고용)] ===\n";
-      csvContent += "날짜,비용항목,금액(원),주행거리(km),메모\n";
+      csvContent += "=== [Expenses] ===\n";
+      csvContent += "Date,Category,Amount,Mileage,Memo\n";
 
       expenses.forEach(exp => {
         csvContent += `"${exp.date}","${exp.category}",${exp.amount},${exp.mileage || 0},"${(exp.memo || '').replace(/"/g, '""')}"\n`;
       });
 
-      // 파일 다운로드 실행
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
       const todayStr = new Date().toISOString().substring(0, 10);
-      a.download = `RiderLog_소득세신고용데이터_${todayStr}.csv`;
+      a.download = `RiderLog_Data_${todayStr}.csv`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -856,7 +1012,7 @@
     // ------------------------------------
     async function recognizeOdometerImage(imageBase64, btnElement, inputElement) {
       if (!window.Tesseract) {
-        alert("문자 인식 라이브러리를 로드 중입니다. 잠시 후 다시 시도해 주세요.");
+        alert(currentLang === "en" ? "OCR library is loading. Please try again later." : "문자 인식 라이브러리를 로드 중입니다. 잠시 후 다시 시도해 주세요.");
         return;
       }
 
@@ -880,11 +1036,11 @@
           calculate();
           saveCurrentData();
         } else {
-          alert("사진에서 계기판 숫자를 명확히 읽지 못했습니다. 직접 입력해 주세요.");
+          alert(currentLang === "en" ? "Could not clearly read the numbers. Please enter manually." : "사진에서 계기판 숫자를 명확히 읽지 못했습니다. 직접 입력해 주세요.");
         }
       } catch (error) {
         console.error("OCR Error:", error);
-        alert("인식 중 오류가 발생했습니다. 직접 숫자를 입력해 주세요.");
+        alert(currentLang === "en" ? "Error during recognition. Please enter manually." : "인식 중 오류가 발생했습니다. 직접 숫자를 입력해 주세요.");
       } finally {
         btnElement.textContent = originalIcon;
         btnElement.classList.remove("loading");
@@ -923,7 +1079,8 @@
         hourPay: $("hourPay"),
         kmPay: $("kmPay"),
         historyCountText: $("historyCountText"),
-        excelExportBtn: $("excelExportBtn")
+        excelExportBtn: $("excelExportBtn"),
+        langToggleBtn: $("langToggleBtn")
       },
       history: {
         historyMainView: $("historyMainView"),
@@ -1026,11 +1183,11 @@
         (res, item) => {
           const text = String(item.rideTime || "");
           let sec = 0;
-          if (text.includes("시간") || text.includes("분")) {
+          if (text.includes("시간") || text.includes("분") || text.includes("h") || text.includes("m")) {
             sec =
-              Number(text.match(/(\d+)시간/)?.[1] || 0) * 3600 +
-              Number(text.match(/(\d+)분/)?.[1] || 0) * 60 +
-              Number(text.match(/(\d+)초/)?.[1] || 0);
+              Number(text.match(/(\d+)(?:시간|h)/)?.[1] || 0) * 3600 +
+              Number(text.match(/(\d+)(?:분|m)/)?.[1] || 0) * 60 +
+              Number(text.match(/(\d+)(?:초|s)/)?.[1] || 0);
           } else if (!isNaN(text) && text !== "") {
             sec = Number(text) * 60;
           }
@@ -1063,40 +1220,46 @@
         }
       );
 
-      const kmPayVal = totals.distance > 0 ? formatWon(totals.income / totals.distance) : "0원";
+      const zeroStr = formatWon(0);
+      const kmPayVal = totals.distance > 0 ? formatWon(totals.income / totals.distance) : zeroStr;
+      const countSuffix = currentLang === "en" ? " items" : "건";
 
-      if (elements.history.totalDelivery) elements.history.totalDelivery.textContent = `${totals.count.toLocaleString("ko-KR")}건`;
+      if (elements.history.totalDelivery) elements.history.totalDelivery.textContent = `${totals.count.toLocaleString("ko-KR")}${countSuffix}`;
       if (elements.history.totalIncome) elements.history.totalIncome.textContent = formatWon(totals.income);
       if (elements.history.totalDistance) elements.history.totalDistance.textContent = `${totals.distance.toFixed(1)}km`;
       if (elements.history.totalKmPay) elements.history.totalKmPay.textContent = kmPayVal;
-      if (elements.history.totalAvg) elements.history.totalAvg.textContent = totals.count > 0 ? formatWon(totals.income / totals.count) : "0원";
+      if (elements.history.totalAvg) elements.history.totalAvg.textContent = totals.count > 0 ? formatWon(totals.income / totals.count) : zeroStr;
       if (elements.history.totalHourPay) {
         elements.history.totalHourPay.textContent =
-          totals.seconds > 0 ? formatWon(totals.income / (totals.seconds / 3600)) : "0원";
+          totals.seconds > 0 ? formatWon(totals.income / (totals.seconds / 3600)) : zeroStr;
       }
 
-      const periodTextMap = { today: "오늘", week: "이번 주", month: "이번 달", all: "전체" };
-      const periodName = periodTextMap[selectedPeriod] || "전체";
+      const periodTextMap = {
+        today: t("today"),
+        week: t("week"),
+        month: t("month"),
+        all: t("all")
+      };
+      const periodName = periodTextMap[selectedPeriod] || t("all");
       const bmSum = totals.bmIncome + totals.bmMission;
       const cpSum = totals.cpIncome + totals.cpMission;
-      const avgPayStr = totals.count > 0 ? formatWon(totals.income / totals.count) : "0원";
-      const hourPayStr = totals.seconds > 0 ? formatWon(totals.income / (totals.seconds / 3600)) : "0원";
+      const avgPayStr = totals.count > 0 ? formatWon(totals.income / totals.count) : zeroStr;
+      const hourPayStr = totals.seconds > 0 ? formatWon(totals.income / (totals.seconds / 3600)) : zeroStr;
 
       if (elements.history.statDetailContent) {
         elements.history.statDetailContent.innerHTML = `
-          <p class="info-title">📅 선택 기간</p>
+          <p class="info-title">📅 ${t("periodSelection")}</p>
           <p class="info-value-sm" style="margin-bottom:6px;">${periodName}</p>
 
-          <p class="info-title">📦 총 배달 / 총 수입</p>
-          <p class="info-value-sm" style="margin-bottom:6px;">${totals.count.toLocaleString("ko-KR")}건 / ${formatWon(totals.income)}</p>
+          <p class="info-title">📊 ${t("totalCountIncome")}</p>
+          <p class="info-value-sm" style="margin-bottom:6px;">${totals.count.toLocaleString("ko-KR")}${countSuffix} / ${formatWon(totals.income)}</p>
 
-          <p class="info-title">📊 플랫폼별 상세 내역</p>
-          <p class="info-value-sm">🛵 배민: ${totals.bmCount.toLocaleString("ko-KR")}건 (수입 ${formatWon(totals.bmIncome)} + 미션 ${formatWon(totals.bmMission)} = ${formatWon(bmSum)})</p>
-          <p class="info-value-sm">🚀 쿠팡: ${totals.cpCount.toLocaleString("ko-KR")}건 (수입 ${formatWon(totals.cpIncome)} + 미션 ${formatWon(totals.cpMission)} = ${formatWon(cpSum)})</p>
-          <p class="info-value-sm" style="font-weight:bold; color:#e65100; margin-bottom:6px;">💰 전체 합계: ${formatWon(totals.income)}</p>
+          <p class="info-title">📊 Platform Details</p>
+          <p class="info-value-sm">🛵 Baemin ${totals.bmCount.toLocaleString("ko-KR")} · ${formatWon(bmSum)}</p>
+          <p class="info-value-sm">🚀 Coupang ${totals.cpCount.toLocaleString("ko-KR")} · ${formatWon(cpSum)}</p>
 
-          <p class="info-title">🛣 총 주행거리 / km당 단가 / 평균 단가 / 시급</p>
-          <p class="info-value-sm">${totals.distance.toFixed(1)}km | km당 ${kmPayVal} | 단가 ${avgPayStr} | 시급 ${hourPayStr}</p>
+          <p class="info-title" style="margin-top:6px;">🛣 ${t("statsSubLine")}</p>
+          <p class="info-value-sm">${totals.distance.toFixed(1)}km | ${kmPayVal} | ${avgPayStr} | ${hourPayStr}</p>
         `;
       }
     }
@@ -1107,7 +1270,7 @@
       elements.history.list.replaceChildren();
 
       if (history.length === 0) {
-        elements.history.list.insertAdjacentHTML("beforeend", `<p class="info-title" style="text-align:center; padding:10px;">저장된 기록이 없습니다.</p>`);
+        elements.history.list.insertAdjacentHTML("beforeend", `<p class="info-title" style="text-align:center; padding:10px;">${currentLang === "en" ? "No saved records." : "저장된 기록이 없습니다."}</p>`);
         return;
       }
 
@@ -1118,18 +1281,20 @@
         let platformInfo = "";
         if (item.platforms) {
           const parts = [];
-          if (item.platforms.baemin?.income) parts.push(`배민 ${item.platforms.baemin.count}건`);
-          if (item.platforms.coupang?.income) parts.push(`쿠팡 ${item.platforms.coupang.count}건`);
-          if (item.platforms.mission) parts.push(`미션`);
-          if (parts.length > 0) platformInfo = `<p class="history-text" style="font-size:0.75rem; color:#777;">📌 ${parts.join(" / ")}</p>`;
+          if (item.platforms.baemin?.income) parts.push(`Baemin ${item.platforms.baemin.count}`);
+          if (item.platforms.coupang?.income) parts.push(`Coupang ${item.platforms.coupang.count}`);
+          if (parts.length > 0) platformInfo = `<p class="history-text" style="font-size:0.9rem; color:#666;">📌 ${parts.join(" / ")}</p>`;
         }
+
+        const countLabel = currentLang === "en" ? `Total ${item.deliveryCount}` : `총 ${item.deliveryCount}건`;
+        const detailBtnText = currentLang === "en" ? "Details" : "상세보기";
 
         article.innerHTML = `
           <div class="history-header-row">
             <span class="history-date">${item.date}</span>
-            <button class="history-detail-link" type="button">상세보기</button>
+            <button class="history-detail-link" type="button">${detailBtnText}</button>
           </div>
-          <p class="history-text">🚴 총 ${item.deliveryCount}건 | 💰 ${formatWon(item.income)} | 🛣 ${item.distance}km</p>
+          <p class="history-text">🚴 ${countLabel} | 💰 ${formatWon(item.income)} | 🛣 ${item.distance}km</p>
           ${platformInfo}
         `;
 
@@ -1158,59 +1323,59 @@
       const cpMis = item.coupangMission || (typeof item.platforms?.mission === 'number' ? item.platforms.mission : 0);
 
       if (elements.history.detailHeaderTitle) {
-        elements.history.detailHeaderTitle.textContent = `🔎 상세정보 (${item.date})`;
+        elements.history.detailHeaderTitle.textContent = `${t("details")} (${item.date})`;
       }
 
       let photosHtml = "";
       if (item.startPhoto) {
-        photosHtml += `<p class="info-title" style="margin-top:8px;">📷 시작 계기판 사진</p><img src="${item.startPhoto}" class="photo-preview-img">`;
+        photosHtml += `<p class="info-title" style="margin-top:8px;">📷 Start Photo</p><img src="${item.startPhoto}" class="photo-preview-img">`;
       }
       if (item.endPhoto) {
-        photosHtml += `<p class="info-title" style="margin-top:8px;">📷 종료 계기판 사진</p><img src="${item.endPhoto}" class="photo-preview-img">`;
+        photosHtml += `<p class="info-title" style="margin-top:8px;">📷 End Photo</p><img src="${item.endPhoto}" class="photo-preview-img">`;
       }
 
       elements.history.detailContent.innerHTML = `
-        <p class="info-title">📅 운행 시간</p>
+        <p class="info-title">📅 Time</p>
         <p class="info-value-sm">${item.rideTime || "-"}</p>
 
         <hr style="border:0; border-top:1px dashed #ccc; margin:10px 0;">
 
-        <p class="info-title" style="color:#00c73c; font-weight:bold;">🛵 배민 (건수 / 수입 / 미션)</p>
+        <p class="info-title" style="color:#00c73c; font-weight:bold;">🛵 Baemin</p>
         <div style="display:flex; gap:4px; margin-top:2px;">
-          <input id="editBaeminCount" type="number" placeholder="건수" value="${bmCnt}">
-          <input id="editBaeminIncome" type="number" placeholder="수입" value="${bmInc}">
-          <input id="editBaeminMission" type="number" placeholder="미션" value="${bmMis}">
+          <input id="editBaeminCount" type="number" placeholder="Count" value="${bmCnt}">
+          <input id="editBaeminIncome" type="number" placeholder="Income" value="${bmInc}">
+          <input id="editBaeminMission" type="number" placeholder="Mission" value="${bmMis}">
         </div>
 
-        <p class="info-title" style="color:#0055ff; font-weight:bold; margin-top:8px;">🚀 쿠팡이츠 (건수 / 수입 / 미션)</p>
+        <p class="info-title" style="color:#0055ff; font-weight:bold; margin-top:8px;">🚀 Coupang</p>
         <div style="display:flex; gap:4px; margin-top:2px;">
-          <input id="editCoupangCount" type="number" placeholder="건수" value="${cpCnt}">
-          <input id="editCoupangIncome" type="number" placeholder="수입" value="${cpInc}">
-          <input id="editCoupangMission" type="number" placeholder="미션" value="${cpMis}">
+          <input id="editCoupangCount" type="number" placeholder="Count" value="${cpCnt}">
+          <input id="editCoupangIncome" type="number" placeholder="Income" value="${cpInc}">
+          <input id="editCoupangMission" type="number" placeholder="Mission" value="${cpMis}">
         </div>
 
         <hr style="border:0; border-top:1px dashed #ccc; margin:10px 0;">
 
         <div class="row-inputs">
           <div class="row-item">
-            <label class="info-title" for="editStartOdometer">시작 주행거리 (km)</label>
-            <input id="editStartOdometer" type="number" min="0" step="0.1" value="${item.startOdometer || ''}" placeholder="시작 거리">
+            <label class="info-title">Start (km)</label>
+            <input id="editStartOdometer" type="number" min="0" step="0.1" value="${item.startOdometer || ''}">
           </div>
           <div class="row-item">
-            <label class="info-title" for="editEndOdometer">종료 주행거리 (km)</label>
-            <input id="editEndOdometer" type="number" min="0" step="0.1" value="${item.endOdometer || ''}" placeholder="종료 거리">
+            <label class="info-title">End (km)</label>
+            <input id="editEndOdometer" type="number" min="0" step="0.1" value="${item.endOdometer || ''}">
           </div>
           <div class="row-item">
-            <label class="info-title" for="editDistance">주행거리 (km)</label>
-            <input id="editDistance" type="number" readonly value="${item.distance}" placeholder="자동계산">
+            <label class="info-title">Distance</label>
+            <input id="editDistance" type="number" readonly value="${item.distance}">
           </div>
         </div>
 
         ${photosHtml}
 
         <div style="display:flex; gap:6px; margin-top:15px;">
-          <button id="saveEditBtn" class="btn btn-start" type="button" style="flex:1;">저장</button>
-          <button id="deleteEditBtn" class="btn btn-end" type="button" style="flex:1;">삭제</button>
+          <button id="saveEditBtn" class="btn btn-start" type="button" style="flex:1;">Save</button>
+          <button id="deleteEditBtn" class="btn btn-end" type="button" style="flex:1;">Delete</button>
         </div>
       `;
 
@@ -1265,15 +1430,15 @@
         coupang: { count: cpCount, income: cpIncome },
         mission: bmMission + cpMission
       };
-      item.avgPrice = totalDelivery > 0 ? formatWon(totalIncome / totalDelivery) : "0원";
-      item.kmPay = distance > 0 ? formatWon(totalIncome / distance) : "0원";
+      item.avgPrice = totalDelivery > 0 ? formatWon(totalIncome / totalDelivery) : formatWon(0);
+      item.kmPay = distance > 0 ? formatWon(totalIncome / distance) : formatWon(0);
 
       Storage.set("HISTORY", history);
       updateHistoryCount();
       updateStatistics();
       displayHistory();
       showDetail(id);
-      alert("기록을 수정했습니다.");
+      alert(currentLang === "en" ? "Record updated." : "기록을 수정했습니다.");
     }
 
     function closeDetail() {
@@ -1282,7 +1447,7 @@
     }
 
     function deleteHistory(id) {
-      if (!confirm("이 기록을 삭제하시겠습니까?")) return;
+      if (!confirm(currentLang === "en" ? "Delete this record?" : "이 기록을 삭제하시겠습니까?")) return;
       const history = Storage.get("HISTORY").filter((item) => item.id !== id);
       Storage.set("HISTORY", history);
 
@@ -1295,14 +1460,14 @@
     function updateHistoryCount() {
       if (elements.main.historyCountText) {
         const count = Storage.get("HISTORY").length;
-        elements.main.historyCountText.textContent = `(저장된 기록: ${count}건)`;
+        elements.main.historyCountText.textContent = `${t("savedCountPrefix")}${count}${t("savedCountSuffix")}`;
       }
     }
 
     function saveManualHistory() {
       const dateVal = elements.history.manualDate.value;
       if (!dateVal) {
-        alert("날짜를 선택해 주세요.");
+        alert(currentLang === "en" ? "Please select a date." : "날짜를 선택해 주세요.");
         return;
       }
 
@@ -1327,7 +1492,7 @@
         id: Date.now(),
         createdAt: new Date(dateVal).toISOString(),
         date: dateVal,
-        rideTime: minutes > 0 ? `${minutes}분` : "-",
+        rideTime: minutes > 0 ? `${minutes}m` : "-",
         deliveryCount: totalDelivery,
         income: totalIncome,
         baeminCount: bmCount,
@@ -1357,11 +1522,11 @@
       updateHistoryCount();
       updateStatistics();
       displayHistory();
-      alert("배달 기록이 추가되었습니다!");
+      alert(currentLang === "en" ? "Record added!" : "기록이 추가되었습니다!");
     }
 
     // ------------------------------------
-    // 6. Expense(운행 비용) 로직
+    // 6. Expense 로직
     // ------------------------------------
     function saveExpense() {
       const date = elements.expense.date.value;
@@ -1371,7 +1536,7 @@
       const memo = elements.expense.memo.value;
 
       if (!date || amount <= 0) {
-        alert("날짜와 올바른 비용 금액을 입력해 주세요.");
+        alert(currentLang === "en" ? "Please check date and amount." : "날짜와 올바른 금액을 입력해 주세요.");
         return;
       }
 
@@ -1392,7 +1557,7 @@
       elements.expense.memo.value = "";
 
       displayExpenses();
-      alert("운행 비용이 저장되었습니다.");
+      alert(currentLang === "en" ? "Expense saved." : "비용이 저장되었습니다.");
     }
 
     function displayExpenses() {
@@ -1401,7 +1566,7 @@
       elements.expense.list.replaceChildren();
 
       if (expenses.length === 0) {
-        elements.expense.list.insertAdjacentHTML("beforeend", `<p class="info-title" style="text-align:center; padding:10px;">저장된 비용 내역이 없습니다.</p>`);
+        elements.expense.list.insertAdjacentHTML("beforeend", `<p class="info-title" style="text-align:center; padding:10px;">${currentLang === "en" ? "No expense records." : "저장된 비용 내역이 없습니다."}</p>`);
         return;
       }
 
@@ -1412,8 +1577,8 @@
         article.innerHTML = `
           <p class="history-date">${item.date} [${item.category}]</p>
           <p class="history-text">💰 ${formatWon(item.amount)} | 🛣 ${item.mileage ? item.mileage + 'km' : '-'} | 📝 ${item.memo || '-'}</p>
-          <div class="history-actions">
-            <button class="delete-btn" type="button" style="width:100%; padding:4px 8px; border-radius:4px; border:none; font-size:0.7rem; cursor:pointer; background:#ffebee; color:#c62828;">삭제</button>
+          <div class="history-actions" style="margin-top:6px;">
+            <button class="delete-btn" type="button" style="width:100%; padding:6px 8px; border-radius:4px; border:none; font-size:0.9rem; cursor:pointer; background:#ffebee; color:#c62828; font-weight:600;">${currentLang === "en" ? "Delete" : "삭제"}</button>
           </div>
         `;
 
@@ -1423,7 +1588,7 @@
     }
 
     function deleteExpense(id) {
-      if (!confirm("이 비용 기록을 삭제하시겠습니까?")) return;
+      if (!confirm(currentLang === "en" ? "Delete this expense?" : "이 비용 기록을 삭제하시겠습니까?")) return;
       const expenses = Storage.get("EXPENSE").filter((item) => item.id !== id);
       Storage.set("EXPENSE", expenses);
       displayExpenses();
@@ -1484,7 +1649,7 @@
       if (elements.main.coupangIncome) elements.main.coupangIncome.value = data.coupangIncome || "";
       if (elements.main.startOdometer) elements.main.startOdometer.value = data.startOdometer || "";
       if (elements.main.endOdometer) elements.main.endOdometer.value = data.endOdometer || "";
-      if (elements.main.status) elements.main.status.textContent = data.status || "🟡 대기 중";
+      if (elements.main.status) elements.main.status.textContent = data.status || t("statusReady");
       if (elements.main.startTime) elements.main.startTime.innerHTML = data.startTime || "-";
       if (elements.main.endTime) elements.main.endTime.innerHTML = data.endTime || "-";
       if (elements.main.rideTime) elements.main.rideTime.textContent = data.rideTime || "-";
@@ -1519,6 +1684,17 @@
 
       if (elements.main.excelExportBtn) {
         elements.main.excelExportBtn.onclick = exportTaxExcel;
+      }
+
+      if (elements.main.langToggleBtn) {
+        elements.main.langToggleBtn.onclick = () => {
+          currentLang = currentLang === "ko" ? "en" : "ko";
+          updateTexts();
+          calculate();
+          updateStatistics();
+          displayHistory();
+          displayExpenses();
+        };
       }
 
       document.querySelectorAll(".period-btn").forEach((btn) => {
@@ -1561,18 +1737,18 @@
 
       if ($("startBtn")) {
         $("startBtn").onclick = () => {
-          if (startDate && !confirm("이미 운행 중입니다. 새로 시작하시겠습니까?")) return;
+          if (startDate && !confirm(currentLang === "en" ? "Already running. Restart?" : "이미 운행 중입니다. 새로 시작하시겠습니까?")) return;
           if (!elements.main.startOdometer.value) {
-            alert("배달 시작 전 계기판 거리를 입력해 주세요.");
+            alert(currentLang === "en" ? "Please enter start odometer." : "배달 시작 전 계기판 거리를 입력해 주세요.");
             return;
           }
 
           startDate = new Date();
           const now = new Date();
-          elements.main.status.textContent = "🟢 운행 중";
+          elements.main.status.textContent = t("statusRunning");
           elements.main.startTime.innerHTML = `${now.getMonth() + 1}/${now.getDate()}<br>${now.toLocaleTimeString("ko-KR", { hour: '2-digit', minute: '2-digit', hour12: false })}`;
           elements.main.endTime.textContent = "-";
-          elements.main.rideTime.textContent = "진행 중";
+          elements.main.rideTime.textContent = currentLang === "en" ? "Running" : "진행 중";
 
           calculate();
           saveCurrentData();
@@ -1582,16 +1758,16 @@
       if ($("endBtn")) {
         $("endBtn").onclick = () => {
           if (!startDate) {
-            alert("먼저 배달 시작 버튼을 눌러 주세요.");
+            alert(currentLang === "en" ? "Please click Start first." : "먼저 시작 버튼을 눌러 주세요.");
             return;
           }
           if (!elements.main.endOdometer.value) {
-            alert("배달 종료 후 계기판 거리를 입력해 주세요.");
+            alert(currentLang === "en" ? "Please enter end odometer." : "종료 후 계기판 거리를 입력해 주세요.");
             return;
           }
 
           const now = new Date();
-          elements.main.status.textContent = "🔴 운행 종료";
+          elements.main.status.textContent = t("statusEnded");
           elements.main.endTime.innerHTML = `${now.getMonth() + 1}/${now.getDate()}<br>${now.toLocaleTimeString("ko-KR", { hour: '2-digit', minute: '2-digit', hour12: false })}`;
           elements.main.rideTime.textContent = formatDuration(Date.now() - startDate.getTime());
 
@@ -1631,10 +1807,10 @@
       if ($("summaryBtn")) {
         $("summaryBtn").onclick = () => {
           if (deliveryCount === 0) {
-            alert("저장할 배달 기록이 없습니다.");
+            alert(currentLang === "en" ? "No delivery records to save." : "저장할 기록이 없습니다.");
             return;
           }
-          if (confirm("현재 기록을 사진과 함께 저장하시겠습니까?")) {
+          if (confirm(currentLang === "en" ? "Save current records with photo?" : "현재 기록을 사진과 함께 저장하시겠습니까?")) {
             const history = Storage.get("HISTORY");
             const startOdo = Number(elements.main.startOdometer.value) || 0;
             const endOdo = Number(elements.main.endOdometer.value) || 0;
@@ -1677,7 +1853,7 @@
             elements.main.startOdometer.value = "";
             elements.main.endOdometer.value = "";
             elements.main.distance.value = "";
-            elements.main.status.textContent = "🟡 대기 중";
+            elements.main.status.textContent = t("statusReady");
             elements.main.startTime.textContent = "-";
             elements.main.endTime.textContent = "-";
             elements.main.rideTime.textContent = "-";
@@ -1687,7 +1863,7 @@
             calculate();
             Storage.removeSavedState();
             updateHistoryCount();
-            alert("오늘 운행 기록을 성공적으로 저장했습니다!");
+            alert(currentLang === "en" ? "Successfully saved!" : "기록을 성공적으로 저장했습니다!");
           }
         };
       }
@@ -1732,7 +1908,7 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       loadCurrentData();
-      updateHistoryCount();
+      updateTexts();
       bindEvents();
     });
   </script>
