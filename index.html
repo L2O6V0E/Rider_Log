@@ -3,408 +3,81 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>RiderLog v0.4</title>
-  <!-- Tesseract.js OCR Library -->
+  <title>RiderLog v0.7</title>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      background-color: #f2f4f7;
-      color: #333;
-      padding: 8px;
-      display: flex;
-      justify-content: center;
-      font-size: 1.05rem;
-    }
-
-    .card {
-      width: 100%;
-      max-width: 420px;
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 14px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-    }
-
-    .header-area {
-      margin-bottom: 10px;
-    }
-
-    .header-top-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      margin-bottom: 2px;
-    }
-
-    .sub {
-      font-size: 0.95rem;
-      color: #666;
-    }
-
-    #historyCountText {
-      color: #1565c0;
-      font-weight: 600;
-    }
-
-    .header-btns {
-      display: flex;
-      gap: 4px;
-    }
-
-    .btn-excel-header, .btn-lang-header {
-      background-color: #e8f5e9;
-      color: #2e7d32;
-      border: 1px solid #c8e6c9;
-      border-radius: 8px;
-      padding: 4px 10px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      height: 38px;
-      white-space: nowrap;
-    }
-
-    .btn-lang-header {
-      background-color: #e3f2fd;
-      color: #1565c0;
-      border-color: #bbdefb;
-    }
-
-    .btn-grid-group {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      margin-bottom: 10px;
-    }
-
-    .btn {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      width: 100%;
-      height: 44px;
-      padding: 4px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
-      transition: all 0.15s ease;
-      line-height: 1;
-      white-space: nowrap;
-    }
-
-    .btn:active {
-      transform: scale(0.96);
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn .icon {
-      font-size: 1.2rem;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f2f4f7; color: #333; padding: 8px; display: flex; justify-content: center; font-size: 1.05rem; }
+    .card { width: 100%; max-width: 420px; background: #ffffff; border-radius: 16px; padding: 14px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05); }
+    .header-area { margin-bottom: 10px; }
+    .header-top-row { display: flex; justify-content: space-between; align-items: center; }
+    h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 2px; }
+    .sub { font-size: 0.95rem; color: #666; }
+    #historyCountText { color: #1565c0; font-weight: 600; }
+    .header-btns { display: flex; gap: 4px; }
+    .btn-lang-header { background-color: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; border-radius: 8px; padding: 4px 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; height: 38px; white-space: nowrap; }
+    .btn-grid-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; }
+    .btn { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 4px; width: 100%; height: 44px; padding: 4px; font-size: 0.95rem; font-weight: 600; border-radius: 10px; border: none; cursor: pointer; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03); transition: all 0.15s ease; line-height: 1; white-space: nowrap; }
+    .btn:active { transform: scale(0.96); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); }
+    .btn .icon { font-size: 1.2rem; }
     .btn-start { background-color: #e8f5e9; color: #2e7d32; }
     .btn-end { background-color: #ffebee; color: #c62828; }
     .btn-summary { background-color: #e3f2fd; color: #1565c0; }
     .btn-history { background-color: #f3e5f5; color: #6a1b9a; }
-    .btn-input { background-color: #fff3e0; color: #e65100; }
     .btn-expense { background-color: #e0f2f1; color: #00695c; }
-
-    .btn-back {
-      width: auto;
-      height: 38px;
-      padding: 0 14px;
-      background-color: #eee;
-      color: #333;
-      margin-bottom: 10px;
-      font-size: 0.95rem;
-    }
-
-    .status-box {
-      background-color: #f8f9fa;
-      border-radius: 10px;
-      padding: 10px 12px;
-      margin-bottom: 8px;
-      border: 1px solid #edf0f2;
-    }
-
-    .status-header {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 4px;
-    }
-
-    .info-title {
-      font-size: 0.92rem;
-      color: #666;
-      margin-top: 2px;
-      white-space: nowrap;
-      font-weight: 500;
-    }
-
-    .info-title:first-child {
-      margin-top: 0;
-    }
-
-    .info-value {
-      font-size: 1.15rem;
-      font-weight: 700;
-    }
-
-    .info-value-sm {
-      font-size: 1.02rem;
-      font-weight: 600;
-      margin-top: 3px;
-      line-height: 1.3;
-      word-break: keep-all;
-    }
-
-    .text-center {
-      text-align: center;
-    }
-
-    .row-inputs {
-      display: flex;
-      gap: 6px;
-    }
-
-    .row-inputs.align-end {
-      align-items: flex-end;
-    }
-
-    .row-item {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .platform-card {
-      padding-left: 6px;
-      margin: 6px 0;
-    }
-
+    .btn-save-center { background-color: #fff3e0; color: #e65100; }
+    .btn-back { width: auto; height: 38px; padding: 0 14px; background-color: #eee; color: #333; margin-bottom: 10px; font-size: 0.95rem; }
+    .status-box { background-color: #f8f9fa; border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; border: 1px solid #edf0f2; }
+    .status-header { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .info-title { font-size: 0.92rem; color: #666; margin-top: 2px; white-space: nowrap; font-weight: 500; }
+    .info-value { font-size: 1.15rem; font-weight: 700; }
+    .info-value-sm { font-size: 1.02rem; font-weight: 600; margin-top: 3px; line-height: 1.3; word-break: keep-all; }
+    .text-center { text-align: center; }
+    .row-inputs { display: flex; gap: 6px; }
+    .row-inputs.align-end { align-items: flex-end; }
+    .row-item { flex: 1; min-width: 0; }
+    .platform-card { padding-left: 6px; margin: 6px 0; }
     .platform-baemin-border { border-left: 3px solid #00c73c; }
     .platform-coupang-border { border-left: 3px solid #0055ff; }
-
     .platform-label-baemin { color: #00c73c; font-weight: bold; margin-bottom: 2px; }
     .platform-label-coupang { color: #0055ff; font-weight: bold; margin-bottom: 2px; }
+    .count-area { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 1px 3px; height: 38px; }
+    .total-income-box { background: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 6px; height: 38px; display: flex; align-items: center; justify-content: center; }
+    .total-income-box span { font-weight: 700; color: #2e7d32; font-size: 1.05rem; }
+    input[type="number"], input[type="date"], select, textarea { width: 100%; padding: 4px 6px; margin-top: 2px; border: 1px solid #ddd; border-radius: 6px; font-size: 1.02rem; height: 38px; text-align: center; }
+    .row-inputs.align-end input[type="number"] { margin-top: 0; }
+    textarea { height: 65px; text-align: left; padding: 6px; font-size: 1.02rem; }
+    .input-with-cam { display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+    .input-with-cam input { margin-top: 0; flex: 1; text-align: left; padding-left: 6px; }
+    .btn-cam-icon { width: 38px; height: 38px; background: #ffffff; border: 1px solid #ddd; border-radius: 6px; font-size: 1.15rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04); }
+    .photo-preview-box { margin-top: 4px; display: flex; align-items: center; }
+    .photo-preview-img { width: 100%; max-height: 120px; object-fit: cover; border-radius: 6px; border: 1px solid #ccc; cursor: pointer; }
+    .history-item { background: #fff; border: 1px solid #eee; border-radius: 8px; padding: 10px; margin-bottom: 8px; }
+    .history-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .history-date { font-weight: bold; font-size: 1.02rem; }
+    .history-text { font-size: 0.98rem; color: #444; }
+    .period-buttons { display: flex; gap: 4px; margin-top: 6px; }
+    .period-btn { flex: 1; padding: 7px 0; border-radius: 6px; border: 1px solid #ddd; background: #fff; font-size: 0.92rem; cursor: pointer; font-weight: 500; }
+    .period-btn.active { background: #333; color: #fff; border-color: #333; }
+    .footer { text-align: center; font-size: 0.9rem; color: #aaa; margin-top: 10px; }
 
-    .count-area {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      padding: 1px 3px;
-      height: 38px;
-    }
+    /* 저장 센터 카드 스타일 */
+    .save-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; margin-top: 8px; }
+    .save-card h3 { font-size: 1rem; color: #333; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+    .save-card p { font-size: 0.85rem; color: #666; margin-bottom: 8px; line-height: 1.3; }
+    .save-card-btns { display: flex; gap: 6px; }
 
-    .count-btn {
-      width: 28px;
-      height: 30px;
-      border-radius: 4px;
-      border: none;
-      background: #f0f0f0;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .count-btn:active {
-      background: #ddd;
-    }
-
-    .total-income-box {
-      background: #e8f5e9;
-      border: 1px solid #c8e6c9;
-      border-radius: 6px;
-      height: 38px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .total-income-box span {
-      font-weight: 700;
-      color: #2e7d32;
-      font-size: 1.05rem;
-    }
-
-    .platform-baemin { border-bottom: 2px solid #00c73c; }
-    .platform-mission { border-bottom: 2px solid #ff9900; }
-    .platform-coupang { border-bottom: 2px solid #0055ff; }
-
-    input[type="number"],
-    input[type="date"],
-    select,
-    textarea {
-      width: 100%;
-      padding: 4px 6px;
-      margin-top: 2px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      font-size: 1.02rem;
-      height: 38px;
-      text-align: center;
-    }
-
-    .row-inputs.align-end input[type="number"] {
-      margin-top: 0;
-    }
-
-    textarea {
-      height: 65px;
-      text-align: left;
-      padding: 6px;
-      font-size: 1.02rem;
-    }
-
-    input[type="number"]::placeholder {
-      font-size: 0.9rem;
-    }
-
-    .input-with-cam {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      margin-top: 2px;
-    }
-
-    .input-with-cam input {
-      margin-top: 0;
-      flex: 1;
-      text-align: left;
-      padding-left: 6px;
-    }
-
-    .btn-cam-icon {
-      width: 38px;
-      height: 38px;
-      background: #ffffff;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      font-size: 1.15rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-    }
-
-    .btn-cam-icon.loading {
-      animation: spin 1s infinite linear;
-      background: #fff3e0;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .photo-preview-box {
-      margin-top: 4px;
-      display: flex;
-      align-items: center;
-    }
-
-    .photo-preview-img {
-      width: 100%;
-      max-height: 100px;
-      object-fit: cover;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    .history-item {
-      background: #fff;
-      border: 1px solid #eee;
-      border-radius: 8px;
-      padding: 10px;
-      margin-bottom: 8px;
-    }
-
-    .history-header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 4px;
-    }
-
-    .history-date {
-      font-weight: bold;
-      font-size: 1.02rem;
-    }
-
-    .history-text {
-      font-size: 0.98rem;
-      color: #444;
-    }
-
-    .history-detail-link {
-      background: none;
-      border: none;
-      color: #1565c0;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      padding: 2px 4px;
-    }
-
-    .history-detail-link:hover {
-      text-decoration: underline;
-    }
-
-    .period-buttons {
-      display: flex;
-      gap: 4px;
-      margin-top: 6px;
-    }
-
-    .period-btn {
-      flex: 1;
-      padding: 7px 0;
-      border-radius: 6px;
-      border: 1px solid #ddd;
-      background: #fff;
-      font-size: 0.92rem;
-      cursor: pointer;
-      font-weight: 500;
-    }
-
-    .period-btn.active {
-      background: #333;
-      color: #fff;
-      border-color: #333;
-    }
-
-    .footer {
-      text-align: center;
-      font-size: 0.9rem;
-      color: #aaa;
-      margin-top: 10px;
-    }
+    /* 사진 팝업 모달 스타일 (display: none 추가로 초기 숨김 보장) */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 16px; }
+    .modal-card { background: #fff; border-radius: 12px; width: 100%; max-width: 380px; padding: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); text-align: center; }
+    .modal-img { width: 100%; max-height: 250px; object-fit: contain; border-radius: 8px; border: 1px solid #ddd; background: #000; margin: 10px 0; }
+    .modal-btn-group { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+    .modal-btn-row { display: flex; gap: 6px; }
+    .btn-modal { height: 40px; border-radius: 8px; border: none; font-weight: bold; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .btn-modal-save { background-color: #e3f2fd; color: #1565c0; flex: 1; }
+    .btn-modal-save-all { background-color: #e8f5e9; color: #2e7d32; flex: 1; }
+    .btn-modal-clear { background-color: #ffebee; color: #c62828; width: 100%; }
+    .btn-modal-close { background-color: #eee; color: #333; width: 100%; margin-top: 4px; }
   </style>
 </head>
 <body>
@@ -417,37 +90,19 @@
           <h1>🏍 RiderLog</h1>
           <div class="header-btns">
             <button id="langToggleBtn" class="btn-lang-header" type="button">🌐 EN</button>
-            <button id="excelExportBtn" class="btn-excel-header" type="button">📊 <span data-i18n="excel">엑셀 다운</span></button>
           </div>
         </div>
         <p class="sub"><span data-i18n="subTitle">기록 및 관리</span> <span id="historyCountText">(저장된 기록: 0건)</span></p>
       </header>
 
+      <!-- 버튼 배치 수정: 비용 <-> 저장 위치 교체 -->
       <div class="btn-grid-group">
-        <button id="startBtn" class="btn btn-start">
-          <span class="icon">🚀</span>
-          <span data-i18n="start">시작</span>
-        </button>
-        <button id="endBtn" class="btn btn-end">
-          <span class="icon">🏁</span>
-          <span data-i18n="end">종료</span>
-        </button>
-        <button id="summaryBtn" class="btn btn-summary">
-          <span class="icon">📊</span>
-          <span data-i18n="summary">정산</span>
-        </button>
-        <button id="historyBtn" class="btn btn-history">
-          <span class="icon">📚</span>
-          <span data-i18n="history">기록</span>
-        </button>
-        <button id="inputBtn" class="btn btn-input">
-          <span class="icon">📝</span>
-          <span data-i18n="input">입력</span>
-        </button>
-        <button id="expenseBtn" class="btn btn-expense">
-          <span class="icon">⛽</span>
-          <span data-i18n="expense">비용</span>
-        </button>
+        <button id="startBtn" class="btn btn-start"><span class="icon">🚀</span><span data-i18n="start">시작</span></button>
+        <button id="endBtn" class="btn btn-end"><span class="icon">🏁</span><span data-i18n="end">종료</span></button>
+        <button id="summaryBtn" class="btn btn-summary"><span class="icon">📊</span><span data-i18n="summary">정산</span></button>
+        <button id="historyBtn" class="btn btn-history"><span class="icon">📚</span><span data-i18n="history">기록</span></button>
+        <button id="expenseBtn" class="btn btn-expense"><span class="icon">⛽</span><span data-i18n="expense">비용</span></button>
+        <button id="saveCenterBtn" class="btn btn-save-center"><span class="icon">💾</span><span data-i18n="saveCenter">저장</span></button>
       </div>
 
       <section class="status-box">
@@ -461,12 +116,10 @@
             <p class="info-title" data-i18n="startTime">시작 시간</p>
             <p class="info-value-sm" id="startTime">-</p>
           </div>
-
           <div class="row-item text-center">
             <p class="info-title" data-i18n="endTime">종료 시간</p>
             <p class="info-value-sm" id="endTime">-</p>
           </div>
-
           <div class="row-item text-center">
             <p class="info-title" data-i18n="elapsedTime">소요 시간</p>
             <p class="info-value-sm" id="rideTime">-</p>
@@ -499,43 +152,40 @@
       </section>
 
       <section class="status-box">
-        <div class="row-inputs align-end">
+        <div class="platform-card platform-baemin-border">
+          <p class="info-title platform-label-baemin">🛵 배달의민족</p>
+          <div class="row-inputs">
+            <div class="row-item"><input id="baeminCount" type="number" min="0" placeholder="건수"></div>
+            <div class="row-item"><input id="baeminIncome" type="number" min="0" placeholder="수입"></div>
+            <div class="row-item"><input id="missionIncome" type="number" min="0" placeholder="미션"></div>
+          </div>
+        </div>
+
+        <div class="platform-card platform-coupang-border">
+          <p class="info-title platform-label-coupang">🚀 쿠팡이츠</p>
+          <div class="row-inputs">
+            <div class="row-item"><input id="coupangCount" type="number" min="0" placeholder="건수"></div>
+            <div class="row-item"><input id="coupangIncome" type="number" min="0" placeholder="수입"></div>
+            <div class="row-item"><input id="coupangMissionIncome" type="number" min="0" placeholder="미션"></div>
+          </div>
+        </div>
+
+        <div class="row-inputs align-end" style="margin-top: 10px;">
           <div class="row-item">
-            <p class="info-title" data-i18n="count">건수</p>
-            <div class="count-area">
-              <button id="minusBtn" class="count-btn" type="button">−</button>
-              <strong id="deliveryCount" style="font-size: 1.1rem;">0</strong>
-              <button id="plusBtn" class="count-btn" type="button">+</button>
+            <p class="info-title" data-i18n="count">총 건수</p>
+            <div class="count-area" style="justify-content: center;">
+              <strong id="deliveryCount" style="font-size: 1.1rem; color: #333;">0건</strong>
             </div>
           </div>
-
           <div class="row-item">
             <label class="info-title" for="distance" data-i18n="distance">거리 (km)</label>
             <input id="distance" type="number" readonly placeholder="자동계산">
           </div>
-
           <div class="row-item">
             <p class="info-title" data-i18n="totalIncome">총수입</p>
             <div class="total-income-box">
               <span id="totalIncomeDisplay">0원</span>
             </div>
-          </div>
-        </div>
-
-        <div class="row-inputs" style="margin-top: 8px;">
-          <div class="row-item platform-baemin">
-            <label class="info-title" for="baeminIncome">🛵 배민</label>
-            <input id="baeminIncome" type="number" min="0" placeholder="0">
-          </div>
-
-          <div class="row-item platform-mission">
-            <label class="info-title" for="missionIncome">🎯 미션</label>
-            <input id="missionIncome" type="number" min="0" placeholder="0">
-          </div>
-
-          <div class="row-item platform-coupang">
-            <label class="info-title" for="coupangIncome">🚀 쿠팡</label>
-            <input id="coupangIncome" type="number" min="0" placeholder="0">
           </div>
         </div>
       </section>
@@ -546,12 +196,10 @@
             <p class="info-title" data-i18n="avgPrice">평균 단가</p>
             <p class="info-value-sm" id="avgPrice">0원</p>
           </div>
-
           <div class="row-item text-center">
             <p class="info-title" data-i18n="hourly">시급</p>
             <p class="info-value-sm" id="hourPay">0원</p>
           </div>
-
           <div class="row-item text-center">
             <p class="info-title" data-i18n="perKm">km당 수입</p>
             <p class="info-value-sm" id="kmPay">0원</p>
@@ -560,6 +208,54 @@
       </section>
     </main>
 
+    <!-- 💾 저장 & 데이터 관리 센터 화면 -->
+    <section id="saveCenterPage" hidden>
+      <button class="btn btn-back back-to-main" data-i18n="backMain">← 메인으로</button>
+      
+      <section class="status-box">
+        <p class="info-title" style="font-size: 1.1rem; font-weight: bold; color: #333;" data-i18n="saveCenterTitle">💾 데이터 저장 & 관리 센터</p>
+        
+        <!-- 1. 엑셀 CSV -->
+        <div class="save-card">
+          <h3>📊 엑셀 (CSV) 데이터</h3>
+          <p>전체 운행 기록, 건수, 총수입 텍스트 내역을 엑셀용 CSV 파일로 내보냅니다.</p>
+          <div class="save-card-btns">
+            <button id="exportCsvBtn" class="btn btn-summary" style="height:36px; font-size:0.88rem; flex:2;">💾 엑셀 파일 저장</button>
+            <button id="clearHistoryBtn" class="btn btn-end" style="height:36px; font-size:0.88rem; flex:1;">🗑 기록 비우기</button>
+          </div>
+        </div>
+
+        <!-- 2. PDF 보고서 -->
+        <div class="save-card">
+          <h3>📄 PDF 운행 일지 보고서</h3>
+          <p>계기판 증빙 사진과 정산 내역이 포함된 제출용 보고서를 출력/저장합니다.</p>
+          <div class="save-card-btns">
+            <button id="printPdfBtn" class="btn btn-start" style="height:36px; font-size:0.88rem; flex:1;">🖨 보고서 출력 / PDF 저장</button>
+          </div>
+        </div>
+
+        <!-- 3. 사진 데이터 -->
+        <div class="save-card">
+          <h3>🖼 계기판 사진 데이터</h3>
+          <p>저장된 모든 시작/종료 계기판 사진들을 스마트폰에 다운로드하거나 삭제합니다.</p>
+          <div class="save-card-btns">
+            <button id="exportPhotosBtn" class="btn btn-save-center" style="height:36px; font-size:0.88rem; flex:2;">📦 사진 파일 저장</button>
+            <button id="clearPhotosAllBtn" class="btn btn-end" style="height:36px; font-size:0.88rem; flex:1;">🗑 사진만 비우기</button>
+          </div>
+        </div>
+
+        <!-- 4. 비용 내역 -->
+        <div class="save-card">
+          <h3>⛽ 비용 내역 데이터</h3>
+          <p>주유, 보험, 정비 등 지출 내역만 선택하여 백업하거나 초기화합니다.</p>
+          <div class="save-card-btns">
+            <button id="exportExpensesBtn" class="btn btn-expense" style="height:36px; font-size:0.88rem; flex:2;">💾 비용 내역 저장</button>
+            <button id="clearExpensesBtn" class="btn btn-end" style="height:36px; font-size:0.88rem; flex:1;">🗑 비용만 비우기</button>
+          </div>
+        </div>
+      </section>
+    </section>
+
     <!-- 히스토리 화면 -->
     <section id="historyPage" hidden>
       <div id="historyMainView">
@@ -567,64 +263,34 @@
 
         <section class="status-box">
           <p class="info-title" style="font-weight: bold; color: #333; margin-bottom: 6px; font-size: 1rem;" data-i18n="addRecord">➕ 기록 추가</p>
-
           <div class="row-inputs align-end">
-            <div class="row-item">
-              <label class="info-title" for="manualDate" data-i18n="date">날짜</label>
-              <input id="manualDate" type="date">
-            </div>
-            <div class="row-item">
-              <label class="info-title" for="manualRideMinutes" data-i18n="timeMin">시간(분)</label>
-              <input id="manualRideMinutes" type="number" min="0" placeholder="예: 180">
-            </div>
-            <div class="row-item">
-              <button id="saveManualHistoryBtn" class="btn btn-start" type="button" style="width:100%; height:38px; margin-top:2px; font-size:0.95rem;" data-i18n="saveRecord">💾 저장하기</button>
-            </div>
+            <div class="row-item"><label class="info-title" for="manualDate" data-i18n="date">날짜</label><input id="manualDate" type="date"></div>
+            <div class="row-item"><label class="info-title" for="manualRideMinutes" data-i18n="timeMin">시간(분)</label><input id="manualRideMinutes" type="number" min="0" placeholder="예: 180"></div>
+            <div class="row-item"><button id="saveManualHistoryBtn" class="btn btn-start" type="button" style="width:100%; height:38px; margin-top:2px; font-size:0.95rem;" data-i18n="saveRecord">💾 저장하기</button></div>
           </div>
 
           <div class="platform-card platform-baemin-border" style="margin-top:8px;">
             <p class="info-title platform-label-baemin">🛵 배민</p>
             <div class="row-inputs">
-              <div class="row-item">
-                <input id="manualBaeminCount" type="number" min="0" placeholder="건수">
-              </div>
-              <div class="row-item">
-                <input id="manualBaeminIncome" type="number" min="0" placeholder="수입">
-              </div>
-              <div class="row-item">
-                <input id="manualBaeminMission" type="number" min="0" placeholder="미션">
-              </div>
+              <div class="row-item"><input id="manualBaeminCount" type="number" min="0" placeholder="건수"></div>
+              <div class="row-item"><input id="manualBaeminIncome" type="number" min="0" placeholder="수입"></div>
+              <div class="row-item"><input id="manualBaeminMission" type="number" min="0" placeholder="미션"></div>
             </div>
           </div>
 
           <div class="platform-card platform-coupang-border">
             <p class="info-title platform-label-coupang">🚀 쿠팡</p>
             <div class="row-inputs">
-              <div class="row-item">
-                <input id="manualCoupangCount" type="number" min="0" placeholder="건수">
-              </div>
-              <div class="row-item">
-                <input id="manualCoupangIncome" type="number" min="0" placeholder="수입">
-              </div>
-              <div class="row-item">
-                <input id="manualCoupangMission" type="number" min="0" placeholder="미션">
-              </div>
+              <div class="row-item"><input id="manualCoupangCount" type="number" min="0" placeholder="건수"></div>
+              <div class="row-item"><input id="manualCoupangIncome" type="number" min="0" placeholder="수입"></div>
+              <div class="row-item"><input id="manualCoupangMission" type="number" min="0" placeholder="미션"></div>
             </div>
           </div>
 
           <div class="row-inputs" style="margin-top: 6px;">
-            <div class="row-item">
-              <label class="info-title" for="manualStartOdometer" data-i18n="start">시작</label>
-              <input id="manualStartOdometer" type="number" min="0" step="0.1" placeholder="시작 거리">
-            </div>
-            <div class="row-item">
-              <label class="info-title" for="manualEndOdometer" data-i18n="end">종료</label>
-              <input id="manualEndOdometer" type="number" min="0" step="0.1" placeholder="종료 거리">
-            </div>
-            <div class="row-item">
-              <label class="info-title" for="manualDistance" data-i18n="distance">거리</label>
-              <input id="manualDistance" type="number" readonly placeholder="자동계산">
-            </div>
+            <div class="row-item"><label class="info-title" for="manualStartOdometer" data-i18n="start">시작</label><input id="manualStartOdometer" type="number" min="0" step="0.1" placeholder="시작 거리"></div>
+            <div class="row-item"><label class="info-title" for="manualEndOdometer" data-i18n="end">종료</label><input id="manualEndOdometer" type="number" min="0" step="0.1" placeholder="종료 거리"></div>
+            <div class="row-item"><label class="info-title" for="manualDistance" data-i18n="distance">거리</label><input id="manualDistance" type="number" readonly placeholder="자동계산"></div>
           </div>
         </section>
 
@@ -642,17 +308,8 @@
           <p class="info-title" data-i18n="selectedStats">📊 선택 통계</p>
           <p class="info-title" data-i18n="totalCountIncome">총 건수 / 총 수입</p>
           <p class="info-value"><span id="totalDelivery">0건</span> / <span id="totalIncome">0원</span></p>
-
           <p class="info-title" style="margin-top:6px;" data-i18n="statsSubLine">총 거리 / km당 단가 / 평균 단가 / 시급</p>
           <p class="info-value-sm"><span id="totalDistance">0km</span> | km당 <span id="totalKmPay">0원</span> | 단가 <span id="totalAvg">0원</span> | 시급 <span id="totalHourPay">0원</span></p>
-
-          <div style="margin-top: 8px;">
-            <button id="showStatDetailBtn" class="detail-btn" type="button" style="padding:6px 12px; border-radius:4px; border:none; font-size:0.92rem; cursor:pointer; background:#e3f2fd; color:#1565c0; font-weight: 600;" data-i18n="viewDetails">상세 보기</button>
-          </div>
-
-          <div id="statDetailInlineArea" style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #ddd;" hidden>
-            <div id="statDetailContent"></div>
-          </div>
         </section>
 
         <section class="status-box">
@@ -670,25 +327,12 @@
       </section>
     </section>
 
-    <!-- 입력 준비 화면 -->
-    <section id="inputPage" hidden>
-      <button class="btn btn-back back-to-main" data-i18n="backMain">← 메인으로</button>
-      <section class="status-box">
-        <p class="info-title" style="font-size: 1rem;" data-i18n="inputTitle">📝 입력</p>
-        <p class="info-title" data-i18n="inputDesc">※ 준비 화면입니다.</p>
-      </section>
-    </section>
-
     <!-- 운행 비용 화면 -->
     <section id="expensePage" hidden>
       <button class="btn btn-back back-to-main" data-i18n="backMain">← 메인으로</button>
-
       <section class="status-box">
         <p class="info-title" style="font-size: 1rem; font-weight: bold; margin-bottom: 6px;" data-i18n="expenseRecord">⛽ 비용 기록</p>
-
-        <label class="info-title" for="expenseDate" data-i18n="date">날짜</label>
-        <input id="expenseDate" type="date">
-
+        <label class="info-title" for="expenseDate" data-i18n="date">날짜</label><input id="expenseDate" type="date">
         <label class="info-title" for="expenseCategory" style="margin-top:6px;" data-i18n="category">항목</label>
         <select id="expenseCategory">
           <option value="주유" data-i18n="catFuel">주유</option>
@@ -696,16 +340,9 @@
           <option value="정비" data-i18n="catMaintenance">정비</option>
           <option value="기타" data-i18n="catEtc">기타</option>
         </select>
-
-        <label class="info-title" for="expenseAmount" style="margin-top:6px;" data-i18n="amount">금액 (원)</label>
-        <input id="expenseAmount" type="number" min="0" placeholder="0">
-
-        <label class="info-title" for="expenseMileage" style="margin-top:6px;" data-i18n="mileage">거리 (km)</label>
-        <input id="expenseMileage" type="number" min="0" step="0.1" placeholder="예: 12500">
-
-        <label class="info-title" for="expenseMemo" style="margin-top:6px;" data-i18n="memo">메모</label>
-        <textarea id="expenseMemo" placeholder="메모 입력"></textarea>
-
+        <label class="info-title" for="expenseAmount" style="margin-top:6px;" data-i18n="amount">금액 (원)</label><input id="expenseAmount" type="number" min="0" placeholder="0">
+        <label class="info-title" for="expenseMileage" style="margin-top:6px;" data-i18n="mileage">거리 (km)</label><input id="expenseMileage" type="number" min="0" step="0.1" placeholder="예: 12500">
+        <label class="info-title" for="expenseMemo" style="margin-top:6px;" data-i18n="memo">메모</label><textarea id="expenseMemo" placeholder="메모 입력"></textarea>
         <button id="saveExpenseBtn" class="btn btn-start" type="button" style="margin-top:10px; width:100%; aspect-ratio:auto; padding:10px; height: 44px; font-size: 1rem;" data-i18n="saveExpense">비용 저장</button>
       </section>
 
@@ -715,1201 +352,199 @@
       </section>
     </section>
 
-    <footer class="footer">Version Stable 0.4</footer>
+    <!-- 계기판 사진 팝업 모달 (초기 보이지 않도록 확실한 style 지정) -->
+    <div id="photoModal" class="modal-overlay" style="display: none;">
+      <div class="modal-card">
+        <p class="info-title" id="modalTitle" style="font-size:1.1rem; font-weight:bold; color:#333;">🖼 계기판 사진 보기</p>
+        <img id="modalImg" class="modal-img" src="" alt="계기판 사진">
+        
+        <div class="modal-btn-group">
+          <div class="modal-btn-row">
+            <button id="modalSaveSelectedBtn" class="btn-modal btn-modal-save">💾 이 사진 저장</button>
+            <button id="modalSaveAllBtn" class="btn-modal btn-modal-save-all">📦 전체 저장</button>
+          </div>
+          <button id="modalClearPhotoBtn" class="btn-modal btn-modal-clear">🗑 사진 비우기</button>
+          <button id="modalCloseBtn" class="btn-modal btn-modal-close">✖ 닫기</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">Version Stable 0.7</footer>
   </div>
 
   <script>
-    // ------------------------------------
-    // 다국어 딕셔너리
-    // ------------------------------------
-    let currentLang = "ko"; // 기본값 한국어
+    let currentLang = "ko";
     const i18nData = {
-      ko: {
-        excel: "엑셀 다운",
-        subTitle: "기록 및 관리",
-        start: "시작",
-        end: "종료",
-        summary: "정산",
-        history: "기록",
-        input: "입력",
-        expense: "비용",
-        statusLabel: "상태:",
-        statusReady: "🟡 대기 중",
-        statusRunning: "🟢 진행 중",
-        statusEnded: "🔴 종료됨",
-        startTime: "시작 시간",
-        endTime: "종료 시간",
-        elapsedTime: "소요 시간",
-        startOdo: "시작 계기판 (km)",
-        endOdo: "종료 계기판 (km)",
-        count: "건수",
-        distance: "거리 (km)",
-        totalIncome: "총수입",
-        avgPrice: "평균 단가",
-        hourly: "시급",
-        perKm: "km당 수입",
-        backMain: "← 메인으로",
-        addRecord: "➕ 기록 추가",
-        date: "날짜",
-        timeMin: "시간(분)",
-        saveRecord: "💾 저장하기",
-        periodSelection: "📅 기간 선택",
-        today: "오늘",
-        week: "이번 주",
-        month: "이번 달",
-        all: "전체",
-        selectedStats: "📊 선택 통계",
-        totalCountIncome: "총 건수 / 총 수입",
-        statsSubLine: "총 거리 / km당 단가 / 평균 단가 / 시급",
-        viewDetails: "상세 보기",
-        savedRecords: "📚 저장된 목록",
-        details: "🔎 상세 정보",
-        close: "🔙 닫기",
-        inputTitle: "📝 입력",
-        inputDesc: "※ 준비 화면입니다.",
-        expenseRecord: "⛽ 비용 기록",
-        category: "항목",
-        catFuel: "주유",
-        catInsurance: "보험",
-        catMaintenance: "정비",
-        catEtc: "기타",
-        amount: "금액 (원)",
-        mileage: "거리 (km)",
-        memo: "메모",
-        saveExpense: "비용 저장",
-        expenseHistory: "📋 비용 내역",
-        savedCountPrefix: "(저장된 기록: ",
-        savedCountSuffix: "건)",
-        autoCalc: "자동계산"
-      },
-      en: {
-        excel: "Export",
-        subTitle: "Records & Management",
-        start: "Start",
-        end: "End",
-        summary: "Summary",
-        history: "History",
-        input: "Input",
-        expense: "Expense",
-        statusLabel: "Status:",
-        statusReady: "🟡 Ready",
-        statusRunning: "🟢 Running",
-        statusEnded: "🔴 Ended",
-        startTime: "Start Time",
-        endTime: "End Time",
-        elapsedTime: "Elapsed",
-        startOdo: "Start Odo (km)",
-        endOdo: "End Odo (km)",
-        count: "Count",
-        distance: "Distance (km)",
-        totalIncome: "Total Inc",
-        avgPrice: "Avg Price",
-        hourly: "Hourly",
-        perKm: "Per km",
-        backMain: "← Back to Main",
-        addRecord: "➕ Add Record",
-        date: "Date",
-        timeMin: "Time (min)",
-        saveRecord: "💾 Save Record",
-        periodSelection: "📅 Period Selection",
-        today: "Today",
-        week: "Week",
-        month: "Month",
-        all: "All",
-        selectedStats: "📊 Statistics",
-        totalCountIncome: "Total Count / Total Income",
-        statsSubLine: "Total Dist / Per km / Avg Price / Hourly",
-        viewDetails: "View Details",
-        savedRecords: "📚 Saved Records",
-        details: "🔎 Details",
-        close: "🔙 Close",
-        inputTitle: "📝 Input",
-        inputDesc: "※ Preparation screen.",
-        expenseRecord: "⛽ Expense Record",
-        category: "Category",
-        catFuel: "Fuel",
-        catInsurance: "Insurance",
-        catMaintenance: "Maintenance",
-        catEtc: "Etc",
-        amount: "Amount (KRW)",
-        mileage: "Mileage (km)",
-        memo: "Memo",
-        saveExpense: "Save Expense",
-        expenseHistory: "📋 Expense History",
-        savedCountPrefix: "(Saved: ",
-        savedCountSuffix: ")",
-        autoCalc: "Auto km"
-      }
+      ko: { subTitle: "기록 및 관리", start: "시작", end: "종료", summary: "정산", history: "기록", expense: "비용", saveCenter: "저장", statusLabel: "상태:", statusReady: "🟡 대기 중", statusRunning: "🟢 진행 중", statusEnded: "🔴 종료됨", startTime: "시작 시간", endTime: "종료 시간", elapsedTime: "소요 시간", startOdo: "시작 계기판 (km)", endOdo: "종료 계기판 (km)", count: "총 건수", distance: "거리 (km)", totalIncome: "총수입", avgPrice: "평균 단가", hourly: "시급", perKm: "km당 수입", backMain: "← 메인으로", addRecord: "➕ 기록 추가", date: "날짜", timeMin: "시간(분)", saveRecord: "💾 저장하기", periodSelection: "📅 기간 선택", today: "오늘", week: "이번 주", month: "이번 달", all: "전체", selectedStats: "📊 선택 통계", totalCountIncome: "총 건수 / 총 수입", statsSubLine: "총 거리 / km당 단가 / 평균 단가 / 시급", savedRecords: "📚 저장된 목록", details: "🔎 상세 정보", close: "🔙 닫기", expenseRecord: "⛽ 비용 기록", category: "항목", catFuel: "주유", catInsurance: "보험", catMaintenance: "정비", catEtc: "기타", amount: "금액 (원)", mileage: "거리 (km)", memo: "메모", saveExpense: "비용 저장", expenseHistory: "📋 비용 내역", saveCenterTitle: "💾 데이터 저장 & 관리 센터" },
+      en: { subTitle: "Records & Management", start: "Start", end: "End", summary: "Summary", history: "History", expense: "Expense", saveCenter: "Save", statusLabel: "Status:", statusReady: "🟡 Ready", statusRunning: "🟢 Running", statusEnded: "🔴 Ended", startTime: "Start Time", endTime: "End Time", elapsedTime: "Elapsed", startOdo: "Start Odo (km)", endOdo: "End Odo (km)", count: "Total Count", distance: "Distance (km)", totalIncome: "Total Inc", avgPrice: "Avg Price", hourly: "Hourly", perKm: "Per km", backMain: "← Back to Main", addRecord: "➕ Add Record", date: "Date", timeMin: "Time (min)", saveRecord: "💾 Save Record", periodSelection: "📅 Period Selection", today: "Today", week: "Week", month: "Month", all: "All", selectedStats: "📊 Statistics", totalCountIncome: "Total Count / Total Income", statsSubLine: "Total Dist / Per km / Avg Price / Hourly", savedRecords: "📚 Saved Records", details: "🔎 Details", close: "🔙 Close", expenseRecord: "⛽ Expense Record", category: "Category", catFuel: "Fuel", catInsurance: "Insurance", catMaintenance: "Maintenance", catEtc: "Etc", amount: "Amount (KRW)", mileage: "Mileage (km)", memo: "Memo", saveExpense: "Save Expense", expenseHistory: "📋 Expense History", saveCenterTitle: "💾 Storage & Data Center" }
     };
 
-    function t(key) {
-      return i18nData[currentLang][key] || key;
-    }
-
+    function t(key) { return i18nData[currentLang][key] || key; }
     function updateTexts() {
-      document.querySelectorAll("[data-i18n]").forEach(el => {
-        const key = el.getAttribute("data-i18n");
-        el.textContent = t(key);
-      });
+      document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = t(el.getAttribute("data-i18n")); });
       document.getElementById("langToggleBtn").textContent = currentLang === "ko" ? "🌐 EN" : "🌐 KR";
       updateHistoryCount();
     }
 
-    // ------------------------------------
-    // 1. Storage 모듈
-    // ------------------------------------
-    const KEYS = {
-      SAVE: "RiderLog_Save",
-      HISTORY: "RiderLog_History",
-      EXPENSE: "RiderLog_Expenses"
-    };
-
+    const KEYS = { SAVE: "RiderLog_Save", HISTORY: "RiderLog_History", EXPENSE: "RiderLog_Expenses" };
     const Storage = {
-      get(key) {
-        try {
-          return JSON.parse(localStorage.getItem(KEYS[key])) || [];
-        } catch {
-          return [];
-        }
-      },
-      set(key, data) {
-        try {
-          localStorage.setItem(KEYS[key], JSON.stringify(data));
-        } catch (e) {
-          console.error("Storage Set Error:", e);
-        }
-      },
-      getSavedState() {
-        try {
-          return JSON.parse(localStorage.getItem(KEYS.SAVE));
-        } catch {
-          return null;
-        }
-      },
-      setSavedState(data) {
-        try {
-          localStorage.setItem(KEYS.SAVE, JSON.stringify(data));
-        } catch (e) {
-          console.error("Storage Set Error:", e);
-        }
-      },
-      removeSavedState() {
-        localStorage.removeItem(KEYS.SAVE);
-      }
+      get(key) { try { return JSON.parse(localStorage.getItem(KEYS[key])) || []; } catch { return []; } },
+      set(key, data) { try { localStorage.setItem(KEYS[key], JSON.stringify(data)); } catch (e) { console.error("Storage Error:", e); } },
+      remove(key) { localStorage.removeItem(KEYS[key]); }
     };
 
-    // ------------------------------------
-    // 2. Calculate 및 Utility 모듈
-    // ------------------------------------
-    function formatWon(value) {
-      if (currentLang === "en") {
-        return `₩${Math.round(value || 0).toLocaleString("ko-KR")}`;
-      }
-      return `${Math.round(value || 0).toLocaleString("ko-KR")}원`;
-    }
+    const $ = (id) => document.getElementById(id);
+    let currentActiveRecord = null;
+    let currentPhotoType = null;
 
-    function formatDuration(ms) {
-      const sec = Math.floor(ms / 1000);
-      const h = Math.floor(sec / 3600);
-      const m = Math.floor((sec % 3600) / 60);
-      const s = sec % 60;
-      if (currentLang === "en") {
-        return `${h}h ${m}m ${s}s`;
-      }
-      return `${h}시간 ${m}분 ${s}초`;
-    }
-
-    function calculateOdometerDistance(startVal, endVal) {
-      const start = Number(startVal);
-      const end = Number(endVal);
-      if (!startVal || !endVal || end < start) return 0;
-      return Number((end - start).toFixed(1));
-    }
-
-    function calculateMetrics({ baemin, mission, coupang, deliveryCount, startDate, startOdometer, endOdometer }) {
-      const totalIncome = (Number(baemin) || 0) + (Number(mission) || 0) + (Number(coupang) || 0);
-      const distance = calculateOdometerDistance(startOdometer, endOdometer);
-
-      const zeroStr = formatWon(0);
-      const avgPrice = deliveryCount > 0 ? formatWon(totalIncome / deliveryCount) : zeroStr;
-      const kmPay = distance > 0 ? formatWon(totalIncome / distance) : zeroStr;
-
-      let hourPay = zeroStr;
-      if (startDate) {
-        const hours = (Date.now() - new Date(startDate).getTime()) / 3600000;
-        hourPay = hours > 0 ? formatWon(totalIncome / hours) : zeroStr;
-      }
-
-      return { totalIncome, distance, avgPrice, hourPay, kmPay };
-    }
-
-    function compressImage(file, callback) {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = (e) => {
-        const img = new Image();
-        img.src = e.target.result;
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          const maxWidth = 600;
-          const scaleSize = maxWidth / img.width;
-          canvas.width = maxWidth;
-          canvas.height = img.height * scaleSize;
-
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          callback(canvas.toDataURL("image/jpeg", 0.7));
-        };
-      };
-    }
-
-    function exportTaxExcel() {
-      const history = Storage.get("HISTORY");
-      const expenses = Storage.get("EXPENSE");
-
-      if (history.length === 0 && expenses.length === 0) {
-        alert(currentLang === "en" ? "No data to export." : "내보낼 데이터가 없습니다.");
-        return;
-      }
-
-      let csvContent = "\uFEFF"; 
-
-      csvContent += "=== [Records] ===\n";
-      csvContent += "Date,Time,Count,Income,BaeminInc,BaeminMis,CoupangInc,CoupangMis,StartOdo,EndOdo,Distance\n";
-      
-      history.forEach(item => {
-        const bmInc = item.baeminIncome || item.platforms?.baemin?.income || 0;
-        const bmMis = item.baeminMission || 0;
-        const cpInc = item.coupangIncome || item.platforms?.coupang?.income || 0;
-        const cpMis = item.coupangMission || 0;
-        
-        csvContent += `"${item.date}","${item.rideTime || '-'}",${item.deliveryCount || 0},${item.income || 0},${bmInc},${bmMis},${cpInc},${cpMis},${item.startOdometer || 0},${item.endOdometer || 0},${item.distance || 0}\n`;
-      });
-
-      csvContent += "\n";
-
-      csvContent += "=== [Expenses] ===\n";
-      csvContent += "Date,Category,Amount,Mileage,Memo\n";
-
-      expenses.forEach(exp => {
-        csvContent += `"${exp.date}","${exp.category}",${exp.amount},${exp.mileage || 0},"${(exp.memo || '').replace(/"/g, '""')}"\n`;
-      });
-
-      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
+    function downloadBase64Image(base64Data, filename) {
       const a = document.createElement("a");
-      a.href = url;
-      const todayStr = new Date().toISOString().substring(0, 10);
-      a.download = `RiderLog_Data_${todayStr}.csv`;
+      a.href = base64Data;
+      a.download = filename;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      URL.revokeObjectURL(url);
     }
 
-    // ------------------------------------
-    // 3. OCR 엔진 (Tesseract.js)
-    // ------------------------------------
-    async function recognizeOdometerImage(imageBase64, btnElement, inputElement) {
-      if (!window.Tesseract) {
-        alert(currentLang === "en" ? "OCR library is loading. Please try again later." : "문자 인식 라이브러리를 로드 중입니다. 잠시 후 다시 시도해 주세요.");
-        return;
-      }
-
-      const originalIcon = btnElement.textContent;
-      btnElement.textContent = "🔍";
-      btnElement.classList.add("loading");
-
-      try {
-        const worker = await Tesseract.createWorker("eng");
-        await worker.setParameters({
-          tessedit_char_whitelist: "0123456789."
-        });
-
-        const { data: { text } } = await worker.recognize(imageBase64);
-        await worker.terminate();
-
-        const matches = text.match(/\d+(\.\d+)?/g);
-        if (matches && matches.length > 0) {
-          const detectedOdometer = matches.reduce((a, b) => (a.length >= b.length ? a : b));
-          inputElement.value = parseFloat(detectedOdometer);
-          calculate();
-          saveCurrentData();
-        } else {
-          alert(currentLang === "en" ? "Could not clearly read the numbers. Please enter manually." : "사진에서 계기판 숫자를 명확히 읽지 못했습니다. 직접 입력해 주세요.");
-        }
-      } catch (error) {
-        console.error("OCR Error:", error);
-        alert(currentLang === "en" ? "Error during recognition. Please enter manually." : "인식 중 오류가 발생했습니다. 직접 숫자를 입력해 주세요.");
-      } finally {
-        btnElement.textContent = originalIcon;
-        btnElement.classList.remove("loading");
-      }
+    // 사진 모달 팝업 제어 (display 속성 조절 방식으로 확실히 변경)
+    function openPhotoModal(record, type) {
+      currentActiveRecord = record;
+      currentPhotoType = type;
+      const imgSrc = type === "start" ? record.startPhoto : record.endPhoto;
+      if (!imgSrc) return;
+      $("modalTitle").textContent = type === "start" ? "📷 시작 계기판 사진" : "📷 종료 계기판 사진";
+      $("modalImg").src = imgSrc;
+      $("photoModal").style.display = "flex";
     }
 
-    // ------------------------------------
-    // 4. UI 요소 바인딩
-    // ------------------------------------
-    const $ = (id) => document.getElementById(id);
-
-    let startPhotoData = "";
-    let endPhotoData = "";
-
-    const elements = {
-      pages: {
-        main: $("mainPage"),
-        history: $("historyPage"),
-        input: $("inputPage"),
-        expense: $("expensePage")
-      },
-      main: {
-        status: $("status"),
-        startTime: $("startTime"),
-        endTime: $("endTime"),
-        rideTime: $("rideTime"),
-        deliveryCount: $("deliveryCount"),
-        baeminIncome: $("baeminIncome"),
-        missionIncome: $("missionIncome"),
-        coupangIncome: $("coupangIncome"),
-        totalIncomeDisplay: $("totalIncomeDisplay"),
-        distance: $("distance"),
-        startOdometer: $("startOdometer"),
-        endOdometer: $("endOdometer"),
-        avgPrice: $("avgPrice"),
-        hourPay: $("hourPay"),
-        kmPay: $("kmPay"),
-        historyCountText: $("historyCountText"),
-        excelExportBtn: $("excelExportBtn"),
-        langToggleBtn: $("langToggleBtn")
-      },
-      history: {
-        historyMainView: $("historyMainView"),
-        list: $("historyList"),
-        totalDelivery: $("totalDelivery"),
-        totalIncome: $("totalIncome"),
-        totalDistance: $("totalDistance"),
-        totalKmPay: $("totalKmPay"),
-        totalAvg: $("totalAvg"),
-        totalHourPay: $("totalHourPay"),
-        detailArea: $("detailArea"),
-        detailContent: $("detailContent"),
-        detailHeaderTitle: $("detailHeaderTitle"),
-        showStatDetailBtn: $("showStatDetailBtn"),
-        statDetailInlineArea: $("statDetailInlineArea"),
-        statDetailContent: $("statDetailContent"),
-        manualDate: $("manualDate"),
-        manualRideMinutes: $("manualRideMinutes"),
-        manualBaeminCount: $("manualBaeminCount"),
-        manualBaeminIncome: $("manualBaeminIncome"),
-        manualBaeminMission: $("manualBaeminMission"),
-        manualCoupangCount: $("manualCoupangCount"),
-        manualCoupangIncome: $("manualCoupangIncome"),
-        manualCoupangMission: $("manualCoupangMission"),
-        manualStartOdometer: $("manualStartOdometer"),
-        manualEndOdometer: $("manualEndOdometer"),
-        manualDistance: $("manualDistance"),
-        saveManualHistoryBtn: $("saveManualHistoryBtn")
-      },
-      expense: {
-        date: $("expenseDate"),
-        category: $("expenseCategory"),
-        amount: $("expenseAmount"),
-        mileage: $("expenseMileage"),
-        memo: $("expenseMemo"),
-        saveBtn: $("saveExpenseBtn"),
-        list: $("expenseList")
-      }
-    };
-
-    function showPage(pageName) {
-      Object.keys(elements.pages).forEach((key) => {
-        if (elements.pages[key]) {
-          elements.pages[key].hidden = (key !== pageName);
-        }
-      });
-
-      if (pageName === "history") {
-        closeDetail();
-        if (elements.history.statDetailInlineArea) {
-          elements.history.statDetailInlineArea.hidden = true;
-        }
-      }
-    }
-
-    // ------------------------------------
-    // 5. History 로직
-    // ------------------------------------
-    let selectedPeriod = "all";
-
-    function getRecordDate(item) {
-      if (item.createdAt) return new Date(item.createdAt);
-      const numbers = String(item.date || "").match(/\d+/g);
-      return numbers && numbers.length >= 3
-        ? new Date(Number(numbers[0]), Number(numbers[1]) - 1, Number(numbers[2]))
-        : new Date(0);
-    }
-
-    function getDayStart(date) {
-      const d = new Date(date);
-      d.setHours(0, 0, 0, 0);
-      return d;
-    }
-
-    function getFilteredHistory() {
-      const history = Storage.get("HISTORY");
-      const today = getDayStart(new Date());
-
-      return history.filter((item) => {
-        if (selectedPeriod === "all") return true;
-        const target = getDayStart(getRecordDate(item));
-
-        if (selectedPeriod === "today") return target.getTime() === today.getTime();
-        if (selectedPeriod === "week") {
-          const weekStart = getDayStart(today);
-          weekStart.setDate(weekStart.getDate() - ((today.getDay() + 6) % 7));
-          return target >= weekStart && target <= today;
-        }
-        if (selectedPeriod === "month") {
-          const date = getRecordDate(item);
-          return date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth();
-        }
-        return true;
-      });
-    }
-
-    function updateStatistics() {
-      const history = getFilteredHistory();
-      const totals = history.reduce(
-        (res, item) => {
-          const text = String(item.rideTime || "");
-          let sec = 0;
-          if (text.includes("시간") || text.includes("분") || text.includes("h") || text.includes("m")) {
-            sec =
-              Number(text.match(/(\d+)(?:시간|h)/)?.[1] || 0) * 3600 +
-              Number(text.match(/(\d+)(?:분|m)/)?.[1] || 0) * 60 +
-              Number(text.match(/(\d+)(?:초|s)/)?.[1] || 0);
-          } else if (!isNaN(text) && text !== "") {
-            sec = Number(text) * 60;
-          }
-
-          const bmInc = item.baeminIncome || item.platforms?.baemin?.income || 0;
-          const bmCnt = item.baeminCount || item.platforms?.baemin?.count || 0;
-          const bmMis = item.baeminMission || 0;
-
-          const cpInc = item.coupangIncome || item.platforms?.coupang?.income || 0;
-          const cpCnt = item.coupangCount || item.platforms?.coupang?.count || 0;
-          const cpMis = item.coupangMission || (typeof item.platforms?.mission === 'number' ? item.platforms.mission : 0);
-
-          return {
-            count: res.count + (item.deliveryCount || 0),
-            income: res.income + (item.income || 0),
-            distance: res.distance + (item.distance || 0),
-            seconds: res.seconds + sec,
-            bmCount: res.bmCount + bmCnt,
-            bmIncome: res.bmIncome + bmInc,
-            bmMission: res.bmMission + bmMis,
-            cpCount: res.cpCount + cpCnt,
-            cpIncome: res.cpIncome + cpInc,
-            cpMission: res.cpMission + cpMis
-          };
-        },
-        {
-          count: 0, income: 0, distance: 0, seconds: 0,
-          bmCount: 0, bmIncome: 0, bmMission: 0,
-          cpCount: 0, cpIncome: 0, cpMission: 0
-        }
-      );
-
-      const zeroStr = formatWon(0);
-      const kmPayVal = totals.distance > 0 ? formatWon(totals.income / totals.distance) : zeroStr;
-      const countSuffix = currentLang === "en" ? " items" : "건";
-
-      if (elements.history.totalDelivery) elements.history.totalDelivery.textContent = `${totals.count.toLocaleString("ko-KR")}${countSuffix}`;
-      if (elements.history.totalIncome) elements.history.totalIncome.textContent = formatWon(totals.income);
-      if (elements.history.totalDistance) elements.history.totalDistance.textContent = `${totals.distance.toFixed(1)}km`;
-      if (elements.history.totalKmPay) elements.history.totalKmPay.textContent = kmPayVal;
-      if (elements.history.totalAvg) elements.history.totalAvg.textContent = totals.count > 0 ? formatWon(totals.income / totals.count) : zeroStr;
-      if (elements.history.totalHourPay) {
-        elements.history.totalHourPay.textContent =
-          totals.seconds > 0 ? formatWon(totals.income / (totals.seconds / 3600)) : zeroStr;
-      }
-
-      const periodTextMap = {
-        today: t("today"),
-        week: t("week"),
-        month: t("month"),
-        all: t("all")
-      };
-      const periodName = periodTextMap[selectedPeriod] || t("all");
-      const bmSum = totals.bmIncome + totals.bmMission;
-      const cpSum = totals.cpIncome + totals.cpMission;
-      const avgPayStr = totals.count > 0 ? formatWon(totals.income / totals.count) : zeroStr;
-      const hourPayStr = totals.seconds > 0 ? formatWon(totals.income / (totals.seconds / 3600)) : zeroStr;
-
-      if (elements.history.statDetailContent) {
-        elements.history.statDetailContent.innerHTML = `
-          <p class="info-title">📅 ${t("periodSelection")}</p>
-          <p class="info-value-sm" style="margin-bottom:6px;">${periodName}</p>
-
-          <p class="info-title">📊 ${t("totalCountIncome")}</p>
-          <p class="info-value-sm" style="margin-bottom:6px;">${totals.count.toLocaleString("ko-KR")}${countSuffix} / ${formatWon(totals.income)}</p>
-
-          <p class="info-title">📊 Platform Details</p>
-          <p class="info-value-sm">🛵 Baemin ${totals.bmCount.toLocaleString("ko-KR")} · ${formatWon(bmSum)}</p>
-          <p class="info-value-sm">🚀 Coupang ${totals.cpCount.toLocaleString("ko-KR")} · ${formatWon(cpSum)}</p>
-
-          <p class="info-title" style="margin-top:6px;">🛣 ${t("statsSubLine")}</p>
-          <p class="info-value-sm">${totals.distance.toFixed(1)}km | ${kmPayVal} | ${avgPayStr} | ${hourPayStr}</p>
-        `;
-      }
-    }
-
-    function displayHistory() {
-      if (!elements.history.list) return;
-      const history = getFilteredHistory().sort((a, b) => getRecordDate(b) - getRecordDate(a) || b.id - a.id);
-      elements.history.list.replaceChildren();
-
-      if (history.length === 0) {
-        elements.history.list.insertAdjacentHTML("beforeend", `<p class="info-title" style="text-align:center; padding:10px;">${currentLang === "en" ? "No saved records." : "저장된 기록이 없습니다."}</p>`);
-        return;
-      }
-
-      history.forEach((item) => {
-        const article = document.createElement("article");
-        article.className = "history-item";
-
-        let platformInfo = "";
-        if (item.platforms) {
-          const parts = [];
-          if (item.platforms.baemin?.income) parts.push(`Baemin ${item.platforms.baemin.count}`);
-          if (item.platforms.coupang?.income) parts.push(`Coupang ${item.platforms.coupang.count}`);
-          if (parts.length > 0) platformInfo = `<p class="history-text" style="font-size:0.9rem; color:#666;">📌 ${parts.join(" / ")}</p>`;
-        }
-
-        const countLabel = currentLang === "en" ? `Total ${item.deliveryCount}` : `총 ${item.deliveryCount}건`;
-        const detailBtnText = currentLang === "en" ? "Details" : "상세보기";
-
-        article.innerHTML = `
-          <div class="history-header-row">
-            <span class="history-date">${item.date}</span>
-            <button class="history-detail-link" type="button">${detailBtnText}</button>
-          </div>
-          <p class="history-text">🚴 ${countLabel} | 💰 ${formatWon(item.income)} | 🛣 ${item.distance}km</p>
-          ${platformInfo}
-        `;
-
-        article.querySelector(".history-detail-link").onclick = () => showDetail(item.id);
-        elements.history.list.append(article);
-      });
-    }
-
-    function toggleStatDetail() {
-      if (!elements.history.statDetailInlineArea) return;
-      const isHidden = elements.history.statDetailInlineArea.hidden;
-      elements.history.statDetailInlineArea.hidden = !isHidden;
-    }
-
-    function showDetail(id) {
-      const history = Storage.get("HISTORY");
-      const item = history.find((record) => record.id === id);
-      if (!item) return;
-
-      const bmCnt = item.baeminCount || item.platforms?.baemin?.count || 0;
-      const bmInc = item.baeminIncome || item.platforms?.baemin?.income || 0;
-      const bmMis = item.baeminMission || 0;
-
-      const cpCnt = item.coupangCount || item.platforms?.coupang?.count || 0;
-      const cpInc = item.coupangIncome || item.platforms?.coupang?.income || 0;
-      const cpMis = item.coupangMission || (typeof item.platforms?.mission === 'number' ? item.platforms.mission : 0);
-
-      if (elements.history.detailHeaderTitle) {
-        elements.history.detailHeaderTitle.textContent = `${t("details")} (${item.date})`;
-      }
-
-      let photosHtml = "";
-      if (item.startPhoto) {
-        photosHtml += `<p class="info-title" style="margin-top:8px;">📷 Start Photo</p><img src="${item.startPhoto}" class="photo-preview-img">`;
-      }
-      if (item.endPhoto) {
-        photosHtml += `<p class="info-title" style="margin-top:8px;">📷 End Photo</p><img src="${item.endPhoto}" class="photo-preview-img">`;
-      }
-
-      elements.history.detailContent.innerHTML = `
-        <p class="info-title">📅 Time</p>
-        <p class="info-value-sm">${item.rideTime || "-"}</p>
-
-        <hr style="border:0; border-top:1px dashed #ccc; margin:10px 0;">
-
-        <p class="info-title" style="color:#00c73c; font-weight:bold;">🛵 Baemin</p>
-        <div style="display:flex; gap:4px; margin-top:2px;">
-          <input id="editBaeminCount" type="number" placeholder="Count" value="${bmCnt}">
-          <input id="editBaeminIncome" type="number" placeholder="Income" value="${bmInc}">
-          <input id="editBaeminMission" type="number" placeholder="Mission" value="${bmMis}">
-        </div>
-
-        <p class="info-title" style="color:#0055ff; font-weight:bold; margin-top:8px;">🚀 Coupang</p>
-        <div style="display:flex; gap:4px; margin-top:2px;">
-          <input id="editCoupangCount" type="number" placeholder="Count" value="${cpCnt}">
-          <input id="editCoupangIncome" type="number" placeholder="Income" value="${cpInc}">
-          <input id="editCoupangMission" type="number" placeholder="Mission" value="${cpMis}">
-        </div>
-
-        <hr style="border:0; border-top:1px dashed #ccc; margin:10px 0;">
-
-        <div class="row-inputs">
-          <div class="row-item">
-            <label class="info-title">Start (km)</label>
-            <input id="editStartOdometer" type="number" min="0" step="0.1" value="${item.startOdometer || ''}">
-          </div>
-          <div class="row-item">
-            <label class="info-title">End (km)</label>
-            <input id="editEndOdometer" type="number" min="0" step="0.1" value="${item.endOdometer || ''}">
-          </div>
-          <div class="row-item">
-            <label class="info-title">Distance</label>
-            <input id="editDistance" type="number" readonly value="${item.distance}">
-          </div>
-        </div>
-
-        ${photosHtml}
-
-        <div style="display:flex; gap:6px; margin-top:15px;">
-          <button id="saveEditBtn" class="btn btn-start" type="button" style="flex:1;">Save</button>
-          <button id="deleteEditBtn" class="btn btn-end" type="button" style="flex:1;">Delete</button>
-        </div>
-      `;
-
-      const updateEditOdometerDistance = () => {
-        const sVal = $("editStartOdometer").value;
-        const eVal = $("editEndOdometer").value;
-        $("editDistance").value = calculateOdometerDistance(sVal, eVal) || "";
-      };
-      $("editStartOdometer").oninput = updateEditOdometerDistance;
-      $("editEndOdometer").oninput = updateEditOdometerDistance;
-
-      $("saveEditBtn").onclick = () => updateHistory(id);
-      $("deleteEditBtn").onclick = () => deleteHistory(id);
-
-      elements.history.historyMainView.hidden = true;
-      elements.history.detailArea.hidden = false;
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function updateHistory(id) {
-      const bmCount = Number($("editBaeminCount").value) || 0;
-      const bmIncome = Number($("editBaeminIncome").value) || 0;
-      const bmMission = Number($("editBaeminMission").value) || 0;
-
-      const cpCount = Number($("editCoupangCount").value) || 0;
-      const cpIncome = Number($("editCoupangIncome").value) || 0;
-      const cpMission = Number($("editCoupangMission").value) || 0;
-
-      const totalDelivery = bmCount + cpCount;
-      const totalIncome = bmIncome + bmMission + cpIncome + cpMission;
-      const sOdo = Number($("editStartOdometer").value) || 0;
-      const eOdo = Number($("editEndOdometer").value) || 0;
-      const distance = Number($("editDistance").value) || calculateOdometerDistance(sOdo, eOdo);
-
-      const history = Storage.get("HISTORY");
-      const item = history.find((record) => record.id === id);
-      if (!item) return;
-
-      item.deliveryCount = totalDelivery;
-      item.income = totalIncome;
-      item.distance = distance;
-      item.startOdometer = sOdo;
-      item.endOdometer = eOdo;
-      item.baeminCount = bmCount;
-      item.baeminIncome = bmIncome;
-      item.baeminMission = bmMission;
-      item.coupangCount = cpCount;
-      item.coupangIncome = cpIncome;
-      item.coupangMission = cpMission;
-      item.platforms = {
-        baemin: { count: bmCount, income: bmIncome },
-        coupang: { count: cpCount, income: cpIncome },
-        mission: bmMission + cpMission
-      };
-      item.avgPrice = totalDelivery > 0 ? formatWon(totalIncome / totalDelivery) : formatWon(0);
-      item.kmPay = distance > 0 ? formatWon(totalIncome / distance) : formatWon(0);
-
-      Storage.set("HISTORY", history);
-      updateHistoryCount();
-      updateStatistics();
-      displayHistory();
-      showDetail(id);
-      alert(currentLang === "en" ? "Record updated." : "기록을 수정했습니다.");
-    }
-
-    function closeDetail() {
-      if (elements.history.detailArea) elements.history.detailArea.hidden = true;
-      if (elements.history.historyMainView) elements.history.historyMainView.hidden = false;
-    }
-
-    function deleteHistory(id) {
-      if (!confirm(currentLang === "en" ? "Delete this record?" : "이 기록을 삭제하시겠습니까?")) return;
-      const history = Storage.get("HISTORY").filter((item) => item.id !== id);
-      Storage.set("HISTORY", history);
-
-      updateHistoryCount();
-      updateStatistics();
-      displayHistory();
-      closeDetail();
+    function closePhotoModal() {
+      $("photoModal").style.display = "none";
+      currentActiveRecord = null;
+      currentPhotoType = null;
     }
 
     function updateHistoryCount() {
-      if (elements.main.historyCountText) {
-        const count = Storage.get("HISTORY").length;
-        elements.main.historyCountText.textContent = `${t("savedCountPrefix")}${count}${t("savedCountSuffix")}`;
-      }
+      const count = Storage.get("HISTORY").length;
+      if ($("historyCountText")) $("historyCountText").textContent = `(저장된 기록: ${count}건)`;
     }
 
-    function saveManualHistory() {
-      const dateVal = elements.history.manualDate.value;
-      if (!dateVal) {
-        alert(currentLang === "en" ? "Please select a date." : "날짜를 선택해 주세요.");
-        return;
-      }
-
-      const bmCount = Number(elements.history.manualBaeminCount.value) || 0;
-      const bmIncome = Number(elements.history.manualBaeminIncome.value) || 0;
-      const bmMission = Number(elements.history.manualBaeminMission.value) || 0;
-
-      const cpCount = Number(elements.history.manualCoupangCount.value) || 0;
-      const cpIncome = Number(elements.history.manualCoupangIncome.value) || 0;
-      const cpMission = Number(elements.history.manualCoupangMission.value) || 0;
-
-      const totalDelivery = bmCount + cpCount;
-      const totalIncome = bmIncome + bmMission + cpIncome + cpMission;
-
-      const startOdo = Number(elements.history.manualStartOdometer.value) || 0;
-      const endOdo = Number(elements.history.manualEndOdometer.value) || 0;
-      const distance = Number(elements.history.manualDistance.value) || 0;
-      const minutes = Number(elements.history.manualRideMinutes.value) || 0;
-
-      const history = Storage.get("HISTORY");
-      history.push({
-        id: Date.now(),
-        createdAt: new Date(dateVal).toISOString(),
-        date: dateVal,
-        rideTime: minutes > 0 ? `${minutes}m` : "-",
-        deliveryCount: totalDelivery,
-        income: totalIncome,
-        baeminCount: bmCount,
-        baeminIncome: bmIncome,
-        baeminMission: bmMission,
-        coupangCount: cpCount,
-        coupangIncome: cpIncome,
-        coupangMission: cpMission,
-        startOdometer: startOdo,
-        endOdometer: endOdo,
-        distance
-      });
-
-      Storage.set("HISTORY", history);
-
-      elements.history.manualBaeminCount.value = "";
-      elements.history.manualBaeminIncome.value = "";
-      elements.history.manualBaeminMission.value = "";
-      elements.history.manualCoupangCount.value = "";
-      elements.history.manualCoupangIncome.value = "";
-      elements.history.manualCoupangMission.value = "";
-      elements.history.manualStartOdometer.value = "";
-      elements.history.manualEndOdometer.value = "";
-      elements.history.manualDistance.value = "";
-      elements.history.manualRideMinutes.value = "";
-
-      updateHistoryCount();
-      updateStatistics();
-      displayHistory();
-      alert(currentLang === "en" ? "Record added!" : "기록이 추가되었습니다!");
-    }
-
-    // ------------------------------------
-    // 6. Expense 로직
-    // ------------------------------------
-    function saveExpense() {
-      const date = elements.expense.date.value;
-      const category = elements.expense.category.value;
-      const amount = Number(elements.expense.amount.value) || 0;
-      const mileage = Number(elements.expense.mileage.value) || 0;
-      const memo = elements.expense.memo.value;
-
-      if (!date || amount <= 0) {
-        alert(currentLang === "en" ? "Please check date and amount." : "날짜와 올바른 금액을 입력해 주세요.");
-        return;
-      }
-
-      const expenses = Storage.get("EXPENSE");
-      expenses.push({
-        id: Date.now(),
-        date,
-        category,
-        amount,
-        mileage,
-        memo
-      });
-
-      Storage.set("EXPENSE", expenses);
-
-      elements.expense.amount.value = "";
-      elements.expense.mileage.value = "";
-      elements.expense.memo.value = "";
-
-      displayExpenses();
-      alert(currentLang === "en" ? "Expense saved." : "비용이 저장되었습니다.");
-    }
-
-    function displayExpenses() {
-      if (!elements.expense.list) return;
-      const expenses = Storage.get("EXPENSE").sort((a, b) => b.id - a.id);
-      elements.expense.list.replaceChildren();
-
-      if (expenses.length === 0) {
-        elements.expense.list.insertAdjacentHTML("beforeend", `<p class="info-title" style="text-align:center; padding:10px;">${currentLang === "en" ? "No expense records." : "저장된 비용 내역이 없습니다."}</p>`);
-        return;
-      }
-
-      expenses.forEach((item) => {
-        const article = document.createElement("article");
-        article.className = "history-item";
-
-        article.innerHTML = `
-          <p class="history-date">${item.date} [${item.category}]</p>
-          <p class="history-text">💰 ${formatWon(item.amount)} | 🛣 ${item.mileage ? item.mileage + 'km' : '-'} | 📝 ${item.memo || '-'}</p>
-          <div class="history-actions" style="margin-top:6px;">
-            <button class="delete-btn" type="button" style="width:100%; padding:6px 8px; border-radius:4px; border:none; font-size:0.9rem; cursor:pointer; background:#ffebee; color:#c62828; font-weight:600;">${currentLang === "en" ? "Delete" : "삭제"}</button>
-          </div>
-        `;
-
-        article.querySelector(".delete-btn").onclick = () => deleteExpense(item.id);
-        elements.expense.list.append(article);
-      });
-    }
-
-    function deleteExpense(id) {
-      if (!confirm(currentLang === "en" ? "Delete this expense?" : "이 비용 기록을 삭제하시겠습니까?")) return;
-      const expenses = Storage.get("EXPENSE").filter((item) => item.id !== id);
-      Storage.set("EXPENSE", expenses);
-      displayExpenses();
-    }
-
-    // ------------------------------------
-    // 7. 메인 앱 이벤트 처리 및 초기화
-    // ------------------------------------
-    let startDate = null;
-    let deliveryCount = 0;
-
-    function calculate() {
-      const metrics = calculateMetrics({
-        baemin: elements.main.baeminIncome.value,
-        mission: elements.main.missionIncome.value,
-        coupang: elements.main.coupangIncome.value,
-        deliveryCount,
-        startDate,
-        startOdometer: elements.main.startOdometer.value,
-        endOdometer: elements.main.endOdometer.value
-      });
-
-      elements.main.totalIncomeDisplay.textContent = formatWon(metrics.totalIncome);
-      elements.main.distance.value = metrics.distance > 0 ? metrics.distance : "";
-      elements.main.avgPrice.textContent = metrics.avgPrice;
-      elements.main.hourPay.textContent = metrics.hourPay;
-      elements.main.kmPay.textContent = metrics.kmPay;
-
-      return metrics.totalIncome;
-    }
-
-    function saveCurrentData() {
-      Storage.setSavedState({
-        deliveryCount,
-        baeminIncome: elements.main.baeminIncome.value,
-        missionIncome: elements.main.missionIncome.value,
-        coupangIncome: elements.main.coupangIncome.value,
-        startOdometer: elements.main.startOdometer.value,
-        endOdometer: elements.main.endOdometer.value,
-        startPhotoData,
-        endPhotoData,
-        status: elements.main.status.textContent,
-        startTime: elements.main.startTime.innerHTML,
-        endTime: elements.main.endTime.innerHTML,
-        rideTime: elements.main.rideTime.textContent,
-        startDate: startDate ? startDate.getTime() : null
-      });
-    }
-
-    function loadCurrentData() {
-      const data = Storage.getSavedState();
-      if (!data) return;
-
-      deliveryCount = data.deliveryCount || 0;
-      if (elements.main.deliveryCount) elements.main.deliveryCount.textContent = deliveryCount;
-      if (elements.main.baeminIncome) elements.main.baeminIncome.value = data.baeminIncome || "";
-      if (elements.main.missionIncome) elements.main.missionIncome.value = data.missionIncome || "";
-      if (elements.main.coupangIncome) elements.main.coupangIncome.value = data.coupangIncome || "";
-      if (elements.main.startOdometer) elements.main.startOdometer.value = data.startOdometer || "";
-      if (elements.main.endOdometer) elements.main.endOdometer.value = data.endOdometer || "";
-      if (elements.main.status) elements.main.status.textContent = data.status || t("statusReady");
-      if (elements.main.startTime) elements.main.startTime.innerHTML = data.startTime || "-";
-      if (elements.main.endTime) elements.main.endTime.innerHTML = data.endTime || "-";
-      if (elements.main.rideTime) elements.main.rideTime.textContent = data.rideTime || "-";
-      startDate = data.startDate ? new Date(data.startDate) : null;
-
-      if (data.startPhotoData) {
-        startPhotoData = data.startPhotoData;
-        $("startPhotoPreview").innerHTML = `<img src="${startPhotoData}" class="photo-preview-img">`;
-      }
-      if (data.endPhotoData) {
-        endPhotoData = data.endPhotoData;
-        $("endPhotoPreview").innerHTML = `<img src="${endPhotoData}" class="photo-preview-img">`;
-      }
-
-      calculate();
-    }
-
-    function bindEvents() {
-      const updateManualDistance = () => {
-        const start = elements.history.manualStartOdometer.value;
-        const end = elements.history.manualEndOdometer.value;
-        elements.history.manualDistance.value = calculateOdometerDistance(start, end) || "";
+    function bindSaveCenterEvents() {
+      $("exportCsvBtn").onclick = () => {
+        const history = Storage.get("HISTORY");
+        if (!history.length) return alert("내보낼 운행 기록이 없습니다.");
+        let csv = "날짜,배민건수,배민수입,쿠팡건수,쿠팡수입,총건수,총수입,거리(km)\n";
+        history.forEach(r => {
+          csv += `${r.date},${r.baeminCount||0},${r.baeminIncome||0},${r.coupangCount||0},${r.coupangIncome||0},${r.deliveryCount||0},${r.totalIncome||0},${r.distance||0}\n`;
+        });
+        const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        downloadBase64Image(url, `RiderLog_History_${new Date().toISOString().slice(0,10)}.csv`);
       };
 
-      if (elements.history.manualStartOdometer) elements.history.manualStartOdometer.oninput = updateManualDistance;
-      if (elements.history.manualEndOdometer) elements.history.manualEndOdometer.oninput = updateManualDistance;
-      if (elements.history.saveManualHistoryBtn) elements.history.saveManualHistoryBtn.onclick = saveManualHistory;
-
-      if (elements.history.showStatDetailBtn) {
-        elements.history.showStatDetailBtn.onclick = toggleStatDetail;
-      }
-
-      if (elements.main.excelExportBtn) {
-        elements.main.excelExportBtn.onclick = exportTaxExcel;
-      }
-
-      if (elements.main.langToggleBtn) {
-        elements.main.langToggleBtn.onclick = () => {
-          currentLang = currentLang === "ko" ? "en" : "ko";
-          updateTexts();
-          calculate();
-          updateStatistics();
-          displayHistory();
-          displayExpenses();
-        };
-      }
-
-      document.querySelectorAll(".period-btn").forEach((btn) => {
-        btn.onclick = (e) => {
-          document.querySelectorAll(".period-btn").forEach((b) => b.classList.remove("active"));
-          e.target.classList.add("active");
-          selectedPeriod = e.target.dataset.period;
-          updateStatistics();
-          displayHistory();
-        };
-      });
-
-      if ($("startPhotoInput")) {
-        $("startPhotoInput").onchange = (e) => {
-          const file = e.target.files[0];
-          if (file) {
-            compressImage(file, (base64Img) => {
-              startPhotoData = base64Img;
-              $("startPhotoPreview").innerHTML = `<img src="${startPhotoData}" class="photo-preview-img">`;
-              saveCurrentData();
-              recognizeOdometerImage(base64Img, $("startCamBtn"), elements.main.startOdometer);
-            });
-          }
-        };
-      }
-
-      if ($("endPhotoInput")) {
-        $("endPhotoInput").onchange = (e) => {
-          const file = e.target.files[0];
-          if (file) {
-            compressImage(file, (base64Img) => {
-              endPhotoData = base64Img;
-              $("endPhotoPreview").innerHTML = `<img src="${endPhotoData}" class="photo-preview-img">`;
-              saveCurrentData();
-              recognizeOdometerImage(base64Img, $("endCamBtn"), elements.main.endOdometer);
-            });
-          }
-        };
-      }
-
-      if ($("startBtn")) {
-        $("startBtn").onclick = () => {
-          if (startDate && !confirm(currentLang === "en" ? "Already running. Restart?" : "이미 운행 중입니다. 새로 시작하시겠습니까?")) return;
-          if (!elements.main.startOdometer.value) {
-            alert(currentLang === "en" ? "Please enter start odometer." : "배달 시작 전 계기판 거리를 입력해 주세요.");
-            return;
-          }
-
-          startDate = new Date();
-          const now = new Date();
-          elements.main.status.textContent = t("statusRunning");
-          elements.main.startTime.innerHTML = `${now.getMonth() + 1}/${now.getDate()}<br>${now.toLocaleTimeString("ko-KR", { hour: '2-digit', minute: '2-digit', hour12: false })}`;
-          elements.main.endTime.textContent = "-";
-          elements.main.rideTime.textContent = currentLang === "en" ? "Running" : "진행 중";
-
-          calculate();
-          saveCurrentData();
-        };
-      }
-
-      if ($("endBtn")) {
-        $("endBtn").onclick = () => {
-          if (!startDate) {
-            alert(currentLang === "en" ? "Please click Start first." : "먼저 시작 버튼을 눌러 주세요.");
-            return;
-          }
-          if (!elements.main.endOdometer.value) {
-            alert(currentLang === "en" ? "Please enter end odometer." : "종료 후 계기판 거리를 입력해 주세요.");
-            return;
-          }
-
-          const now = new Date();
-          elements.main.status.textContent = t("statusEnded");
-          elements.main.endTime.innerHTML = `${now.getMonth() + 1}/${now.getDate()}<br>${now.toLocaleTimeString("ko-KR", { hour: '2-digit', minute: '2-digit', hour12: false })}`;
-          elements.main.rideTime.textContent = formatDuration(Date.now() - startDate.getTime());
-
-          calculate();
-          saveCurrentData();
-        };
-      }
-
-      if ($("plusBtn")) {
-        $("plusBtn").onclick = () => {
-          deliveryCount++;
-          elements.main.deliveryCount.textContent = deliveryCount;
-          calculate();
-          saveCurrentData();
-        };
-      }
-
-      if ($("minusBtn")) {
-        $("minusBtn").onclick = () => {
-          if (deliveryCount === 0) return;
-          deliveryCount--;
-          elements.main.deliveryCount.textContent = deliveryCount;
-          calculate();
-          saveCurrentData();
-        };
-      }
-
-      ["baeminIncome", "missionIncome", "coupangIncome", "startOdometer", "endOdometer"].forEach((id) => {
-        if (elements.main[id]) {
-          elements.main[id].oninput = () => {
-            calculate();
-            saveCurrentData();
-          };
+      $("clearHistoryBtn").onclick = () => {
+        if (confirm("정말로 모든 운행/수입 기록을 삭제하시겠습니까?\n(이 작업은 복구할 수 없습니다.)")) {
+          Storage.remove("HISTORY");
+          updateHistoryCount();
+          alert("운행 기록이 모두 삭제되었습니다.");
         }
-      });
+      };
 
-      if ($("summaryBtn")) {
-        $("summaryBtn").onclick = () => {
-          if (deliveryCount === 0) {
-            alert(currentLang === "en" ? "No delivery records to save." : "저장할 기록이 없습니다.");
-            return;
-          }
-          if (confirm(currentLang === "en" ? "Save current records with photo?" : "현재 기록을 사진과 함께 저장하시겠습니까?")) {
-            const history = Storage.get("HISTORY");
-            const startOdo = Number(elements.main.startOdometer.value) || 0;
-            const endOdo = Number(elements.main.endOdometer.value) || 0;
-            const distance = calculateOdometerDistance(startOdo, endOdo);
-            const totalIncome = calculate();
-            const now = new Date();
+      $("printPdfBtn").onclick = () => {
+        window.print();
+      };
 
-            history.push({
-              id: Date.now(),
-              createdAt: now.toISOString(),
-              date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
-              startTime: elements.main.startTime.innerHTML,
-              endTime: elements.main.endTime.innerHTML,
-              rideTime: elements.main.rideTime.textContent,
-              deliveryCount,
-              income: totalIncome,
-              baeminCount: deliveryCount,
-              baeminIncome: Number(elements.main.baeminIncome.value) || 0,
-              baeminMission: Number(elements.main.missionIncome?.value) || 0,
-              coupangCount: 0,
-              coupangIncome: Number(elements.main.coupangIncome.value) || 0,
-              coupangMission: 0,
-              startOdometer: startOdo,
-              endOdometer: endOdo,
-              distance,
-              startPhoto: startPhotoData,
-              endPhoto: endPhotoData
-            });
+      $("exportPhotosBtn").onclick = () => {
+        const history = Storage.get("HISTORY");
+        let count = 0;
+        history.forEach(r => {
+          if (r.startPhoto) { downloadBase64Image(r.startPhoto, `start_${r.date}.jpg`); count++; }
+          if (r.endPhoto) { downloadBase64Image(r.endPhoto, `end_${r.date}.jpg`); count++; }
+        });
+        if (!count) alert("저장된 계기판 사진이 없습니다.");
+      };
 
-            Storage.set("HISTORY", history);
+      $("clearPhotosAllBtn").onclick = () => {
+        if (confirm("모든 기록에서 계기판 사진 데이터만 삭제하시겠습니까?\n(수입 및 운행 내역은 유지됩니다.)")) {
+          const history = Storage.get("HISTORY");
+          history.forEach(r => { r.startPhoto = ""; r.endPhoto = ""; });
+          Storage.set("HISTORY", history);
+          alert("모든 사진 데이터가 정리되었습니다.");
+        }
+      };
 
-            startDate = null;
-            deliveryCount = 0;
-            startPhotoData = "";
-            endPhotoData = "";
-            elements.main.deliveryCount.textContent = "0";
-            elements.main.baeminIncome.value = "";
-            elements.main.missionIncome.value = "";
-            elements.main.coupangIncome.value = "";
-            elements.main.startOdometer.value = "";
-            elements.main.endOdometer.value = "";
-            elements.main.distance.value = "";
-            elements.main.status.textContent = t("statusReady");
-            elements.main.startTime.textContent = "-";
-            elements.main.endTime.textContent = "-";
-            elements.main.rideTime.textContent = "-";
-            $("startPhotoPreview").innerHTML = "";
-            $("endPhotoPreview").innerHTML = "";
+      $("exportExpensesBtn").onclick = () => {
+        const expenses = Storage.get("EXPENSE");
+        if (!expenses.length) return alert("내보낼 비용 내역이 없습니다.");
+        let csv = "날짜,항목,금액,거리(km),메모\n";
+        expenses.forEach(e => { csv += `${e.date},${e.category},${e.amount},${e.mileage||0},"${e.memo||''}"\n`; });
+        const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        downloadBase64Image(url, `RiderLog_Expenses_${new Date().toISOString().slice(0,10)}.csv`);
+      };
 
-            calculate();
-            Storage.removeSavedState();
-            updateHistoryCount();
-            alert(currentLang === "en" ? "Successfully saved!" : "기록을 성공적으로 저장했습니다!");
-          }
-        };
-      }
-
-      if ($("historyBtn")) {
-        $("historyBtn").onclick = () => {
-          showPage("history");
-          if (elements.history.manualDate && !elements.history.manualDate.value) {
-            elements.history.manualDate.value = new Date().toISOString().substring(0, 10);
-          }
-          updateStatistics();
-          displayHistory();
-        };
-      }
-
-      if ($("inputBtn")) {
-        $("inputBtn").onclick = () => showPage("input");
-      }
-
-      if ($("expenseBtn")) {
-        $("expenseBtn").onclick = () => {
-          showPage("expense");
-          if (elements.expense.date && !elements.expense.date.value) {
-            elements.expense.date.value = new Date().toISOString().substring(0, 10);
-          }
-          displayExpenses();
-        };
-      }
-
-      document.querySelectorAll(".back-to-main").forEach((btn) => {
-        btn.onclick = () => showPage("main");
-      });
-
-      if ($("closeDetailBtn")) {
-        $("closeDetailBtn").onclick = closeDetail;
-      }
-
-      if (elements.expense.saveBtn) {
-        elements.expense.saveBtn.onclick = saveExpense;
-      }
+      $("clearExpensesBtn").onclick = () => {
+        if (confirm("정말로 모든 비용 지출 내역을 삭제하시겠습니까?")) {
+          Storage.remove("EXPENSE");
+          alert("비용 내역이 모두 삭제되었습니다.");
+        }
+      };
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      loadCurrentData();
       updateTexts();
-      bindEvents();
+      bindSaveCenterEvents();
+
+      // 화면 전환
+      $("saveCenterBtn").onclick = () => { $("mainPage").hidden = true; $("saveCenterPage").hidden = false; };
+      $("expenseBtn").onclick = () => { $("mainPage").hidden = true; $("expensePage").hidden = false; };
+      $("historyBtn").onclick = () => { $("mainPage").hidden = true; $("historyPage").hidden = false; };
+
+      document.querySelectorAll(".back-to-main").forEach(b => {
+        b.onclick = () => {
+          $("saveCenterPage").hidden = true;
+          $("expensePage").hidden = true;
+          $("historyPage").hidden = true;
+          $("mainPage").hidden = false;
+        };
+      });
+
+      // 언어 전환
+      $("langToggleBtn").onclick = () => {
+        currentLang = currentLang === "ko" ? "en" : "ko";
+        updateTexts();
+      };
+
+      // 모달 버튼 이벤트
+      $("modalCloseBtn").onclick = closePhotoModal;
+      $("photoModal").onclick = (e) => {
+        if (e.target === $("photoModal")) closePhotoModal(); // 배경 눌러도 닫히도록 적용
+      };
+
+      $("modalSaveSelectedBtn").onclick = () => {
+        if (!currentActiveRecord || !currentPhotoType) return;
+        const img = currentPhotoType === "start" ? currentActiveRecord.startPhoto : currentActiveRecord.endPhoto;
+        if (img) downloadBase64Image(img, `${currentPhotoType}_${currentActiveRecord.date}.jpg`);
+      };
+
+      $("modalSaveAllBtn").onclick = () => {
+        if (!currentActiveRecord) return;
+        if (currentActiveRecord.startPhoto) downloadBase64Image(currentActiveRecord.startPhoto, `start_${currentActiveRecord.date}.jpg`);
+        if (currentActiveRecord.endPhoto) setTimeout(() => downloadBase64Image(currentActiveRecord.endPhoto, `end_${currentActiveRecord.date}.jpg`), 300);
+      };
+
+      $("modalClearPhotoBtn").onclick = () => {
+        if (!currentActiveRecord) return;
+        if (confirm("이 기록의 사진 데이터를 삭제하시겠습니까?")) {
+          const history = Storage.get("HISTORY");
+          const item = history.find(r => r.id === currentActiveRecord.id);
+          if (item) {
+            item.startPhoto = ""; item.endPhoto = "";
+            Storage.set("HISTORY", history);
+            alert("사진이 삭제되었습니다.");
+            closePhotoModal();
+          }
+        }
+      };
     });
   </script>
 </body>
