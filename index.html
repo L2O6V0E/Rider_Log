@@ -118,7 +118,7 @@
             <label class="info-title" for="startOdometer" data-i18n="startOdo">시작 계기판 (km)</label>
             <div class="input-with-cam">
               <input id="startOdometer" type="number" min="0" step="0.1" placeholder="예: 12500">
-              <input type="file" id="startPhotoInput" accept="image/*" capture="camera" hidden>
+              <input type="file" id="startPhotoInput" accept="image/*" capture="environment" hidden>
               <button type="button" id="startCamBtn" class="btn-cam-icon" onclick="document.getElementById('startPhotoInput').click()" title="사진 촬영 및 자동 인식">📷</button>
             </div>
             <div id="startPhotoPreview" class="photo-preview-box"></div>
@@ -128,7 +128,7 @@
             <label class="info-title" for="endOdometer" data-i18n="endOdo">종료 계기판 (km)</label>
             <div class="input-with-cam">
               <input id="endOdometer" type="number" min="0" step="0.1" placeholder="예: 12538">
-              <input type="file" id="endPhotoInput" accept="image/*" capture="camera" hidden>
+              <input type="file" id="endPhotoInput" accept="image/*" capture="environment" hidden>
               <button type="button" id="endCamBtn" class="btn-cam-icon" onclick="document.getElementById('endPhotoInput').click()" title="사진 촬영 및 자동 인식">📷</button>
             </div>
             <div id="endPhotoPreview" class="photo-preview-box"></div>
@@ -224,7 +224,6 @@
           </div>
         </section>
         
-        <!-- 히스토리 목록 구획 -->
         <div id="historyListArea"></div>
       </div>
     </section>
@@ -251,7 +250,7 @@
       </div>
     </div>
 
-    <footer class="footer">Version Stable 0.7</footer>
+    <footer class="footer">Version Stable 0.7.1</footer>
   </div>
 
   <script>
@@ -287,8 +286,11 @@
       set(key, data) {
         try {
           localStorage.setItem(KEYS[key], JSON.stringify(data));
+          return true;
         } catch (e) {
+          alert("저장 용량이 초과되었습니다. 기록 비우기 후 다시 시도해 주세요.");
           console.error("Save Storage Error:", e);
+          return false;
         }
       },
       remove(key) {
@@ -339,7 +341,7 @@
       }
     }
 
-    // 메인 입력 폼 초기화 함수 (정산 후 실행)
+    // 메인 입력 폼 초기화 함수
     function resetMainForm() {
       startTimestamp = null;
       endTimestamp = null;
@@ -371,32 +373,51 @@
       $("kmPay").textContent = "0원";
     }
 
+    // 모바일 폰 용량 초과 방지를 위한 이미지 압축 함수
+    function compressImage(file, callback) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = new Image();
+        img.onload = function () {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          const maxWidth = 500; // 가로 500px로 축소하여 저용량화
+          const scale = maxWidth / img.width;
+          canvas.width = maxWidth;
+          canvas.height = img.height * scale;
+
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.6); // 60% 화질 압축
+          callback(compressedBase64);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
     // OCR 카메라 및 파일 로드
     function setupOCR(inputId, targetInputId, previewId, photoType) {
       $(inputId).addEventListener("change", function (e) {
         const file = e.target.files[0];
         if (!file) return;
 
-        const reader = new FileReader();
-        reader.onload = function (evt) {
-          const base64Img = evt.target.result;
-          if (photoType === "start") startPhotoData = base64Img;
-          else endPhotoData = base64Img;
+        compressImage(file, function(compressedBase64) {
+          if (photoType === "start") startPhotoData = compressedBase64;
+          else endPhotoData = compressedBase64;
 
-          $(previewId).innerHTML = `<img src="${base64Img}" class="photo-preview-img" alt="미리보기">`;
+          $(previewId).innerHTML = `<img src="${compressedBase64}" class="photo-preview-img" alt="미리보기">`;
 
           if (window.Tesseract) {
-            Tesseract.recognize(base64Img, 'eng')
+            Tesseract.recognize(compressedBase64, 'eng')
               .then(({ data: { text } }) => {
                 const numbers = text.replace(/[^0-9.]/g, '');
                 if (numbers) {
                   $(targetInputId).value = numbers;
                   calculateSummary();
                 }
-              }).catch(err => console.error(err));
+              }).catch(err => console.error("OCR 인식 오류:", err));
           }
-        };
-        reader.readAsDataURL(file);
+        });
       });
     }
 
@@ -451,7 +472,7 @@
 
       // [시작] 버튼
       $("startBtn").onclick = (e) => {
-        e.preventDefault();
+        if(e) e.preventDefault();
         startTimestamp = new Date();
         $("status").textContent = "🟢 진행 중";
         $("startTime").textContent = startTimestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -459,7 +480,7 @@
 
       // [종료] 버튼
       $("endBtn").onclick = (e) => {
-        e.preventDefault();
+        if(e) e.preventDefault();
         if (!startTimestamp) return alert("먼저 [시작] 버튼을 눌러주세요.");
         endTimestamp = new Date();
         $("status").textContent = "🔴 종료됨";
@@ -470,71 +491,73 @@
         calculateSummary();
       };
 
-      // [정산] 버튼 - 저장 및 메인 화면 초기화
+      // [정산] 버튼 - 저장 및 메인 화면 초기화 (모바일 터치 이벤트 오작동 완벽 보완)
       $("summaryBtn").onclick = (e) => {
-        e.preventDefault();
-
-        const bCnt = Number($("baeminCount").value) || 0;
-        const bInc = Number($("baeminIncome").value) || 0;
-        const bMis = Number($("missionIncome").value) || 0;
-
-        const cCnt = Number($("coupangCount").value) || 0;
-        const cInc = Number($("coupangIncome").value) || 0;
-        const cMis = Number($("coupangMissionIncome").value) || 0;
-
-        const totalCnt = bCnt + cCnt;
-        const totalInc = bInc + bMis + cInc + cMis;
-
-        if (totalCnt === 0 && totalInc === 0) {
-          if (!confirm("건수 및 수입이 입력되지 않았습니다. 이대로 정산 저장하시겠습니까?")) return;
+        if(e) {
+          e.preventDefault();
+          e.stopPropagation();
         }
 
-        const startOdo = parseFloat($("startOdometer").value) || 0;
-        const endOdo = parseFloat($("endOdometer").value) || 0;
-        const dist = (endOdo > startOdo) ? parseFloat((endOdo - startOdo).toFixed(1)) : 0;
+        try {
+          const bCnt = Number($("baeminCount").value) || 0;
+          const bInc = Number($("baeminIncome").value) || 0;
+          const bMis = Number($("missionIncome").value) || 0;
 
-        const newRecord = {
-          id: Date.now(),
-          date: new Date().toISOString().split('T')[0],
-          startTime: $("startTime").textContent,
-          endTime: $("endTime").textContent,
-          rideMinutes: $("rideTime").textContent !== '-' ? $("rideTime").textContent : '0분',
-          startOdo: startOdo,
-          endOdo: endOdo,
-          distance: dist,
-          baeminCount: bCnt,
-          baeminIncome: bInc + bMis,
-          coupangCount: cCnt,
-          coupangIncome: cInc + cMis,
-          totalCount: totalCnt,
-          totalIncome: totalInc,
-          startPhoto: startPhotoData,
-          endPhoto: endPhotoData
-        };
+          const cCnt = Number($("coupangCount").value) || 0;
+          const cInc = Number($("coupangIncome").value) || 0;
+          const cMis = Number($("coupangMissionIncome").value) || 0;
 
-        // localStorage 저장
-        const historyList = Storage.get("HISTORY");
-        historyList.unshift(newRecord);
-        Storage.set("HISTORY", historyList);
+          const totalCnt = bCnt + cCnt;
+          const totalInc = bInc + bMis + cInc + cMis;
 
-        // 카운트 및 UI 업그레이드
-        updateHistoryCount();
-        renderHistoryList();
+          const startOdo = parseFloat($("startOdometer").value) || 0;
+          const endOdo = parseFloat($("endOdometer").value) || 0;
+          const dist = (endOdo > startOdo) ? parseFloat((endOdo - startOdo).toFixed(1)) : 0;
 
-        alert("정산 기록이 정상적으로 저장되었습니다!");
+          const newRecord = {
+            id: Date.now(),
+            date: new Date().toISOString().split('T')[0],
+            startTime: $("startTime").textContent,
+            endTime: $("endTime").textContent,
+            rideMinutes: $("rideTime").textContent !== '-' ? $("rideTime").textContent : '0분',
+            startOdo: startOdo,
+            endOdo: endOdo,
+            distance: dist,
+            baeminCount: bCnt,
+            baeminIncome: bInc + bMis,
+            coupangCount: cCnt,
+            coupangIncome: cInc + cMis,
+            totalCount: totalCnt,
+            totalIncome: totalInc,
+            startPhoto: startPhotoData,
+            endPhoto: endPhotoData
+          };
 
-        // 메인 화면 초기화
-        resetMainForm();
+          const historyList = Storage.get("HISTORY");
+          historyList.unshift(newRecord);
+          
+          const isSuccess = Storage.set("HISTORY", historyList);
 
-        // 기록 화면으로 전환
-        $("mainPage").hidden = true;
-        $("historyPage").hidden = false;
+          if (isSuccess) {
+            updateHistoryCount();
+            renderHistoryList();
+            alert("정산 완료! 기록에 저장을 마쳤습니다.");
+
+            resetMainForm(); // 홈 화면 입력값 초기화
+
+            // 기록 화면으로 전환
+            $("mainPage").hidden = true;
+            $("historyPage").hidden = false;
+          }
+        } catch (err) {
+          alert("정산 저장 도중 오류 발생: " + err.message);
+        }
       };
 
       // 수동 기록 추가
       if ($("saveManualHistoryBtn")) {
         $("saveManualHistoryBtn").onclick = (e) => {
-          e.preventDefault();
+          if(e) e.preventDefault();
           const mDate = $("manualDate").value;
           const mTime = $("manualRideMinutes").value;
 
