@@ -64,12 +64,7 @@
     .modal-card { background: #fff; border-radius: 12px; width: 100%; max-width: 380px; padding: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); text-align: center; }
     .modal-img { width: 100%; max-height: 250px; object-fit: contain; border-radius: 8px; border: 1px solid #ddd; background: #000; margin: 10px 0; }
     .modal-btn-group { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
-    .modal-btn-row { display: flex; gap: 6px; }
-    .btn-modal { height: 40px; border-radius: 8px; border: none; font-weight: bold; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
-    .btn-modal-save { background-color: #e3f2fd; color: #1565c0; flex: 1; }
-    .btn-modal-save-all { background-color: #e8f5e9; color: #2e7d32; flex: 1; }
-    .btn-modal-clear { background-color: #ffebee; color: #c62828; width: 100%; }
-    .btn-modal-close { background-color: #eee; color: #333; width: 100%; margin-top: 4px; }
+    .modal-btn-close { background-color: #eee; color: #333; width: 100%; height: 40px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -87,12 +82,12 @@
       </header>
 
       <div class="btn-grid-group">
-        <button id="startBtn" class="btn btn-start"><span class="icon">🚀</span><span data-i18n="start">시작</span></button>
-        <button id="endBtn" class="btn btn-end"><span class="icon">🏁</span><span data-i18n="end">종료</span></button>
-        <button id="summaryBtn" class="btn btn-summary"><span class="icon">📊</span><span data-i18n="summary">정산</span></button>
-        <button id="historyBtn" class="btn btn-history"><span class="icon">📚</span><span data-i18n="history">기록</span></button>
-        <button id="expenseBtn" class="btn btn-expense"><span class="icon">⛽</span><span data-i18n="expense">비용</span></button>
-        <button id="saveCenterBtn" class="btn btn-save-center"><span class="icon">💾</span><span data-i18n="saveCenter">저장</span></button>
+        <button id="startBtn" class="btn btn-start" type="button"><span class="icon">🚀</span><span data-i18n="start">시작</span></button>
+        <button id="endBtn" class="btn btn-end" type="button"><span class="icon">🏁</span><span data-i18n="end">종료</span></button>
+        <button id="summaryBtn" class="btn btn-summary" type="button"><span class="icon">📊</span><span data-i18n="summary">정산</span></button>
+        <button id="historyBtn" class="btn btn-history" type="button"><span class="icon">📚</span><span data-i18n="history">기록</span></button>
+        <button id="expenseBtn" class="btn btn-expense" type="button"><span class="icon">⛽</span><span data-i18n="expense">비용</span></button>
+        <button id="saveCenterBtn" class="btn btn-save-center" type="button"><span class="icon">💾</span><span data-i18n="saveCenter">저장</span></button>
       </div>
 
       <section class="status-box">
@@ -200,7 +195,7 @@
 
     <!-- 저장 센터 화면 -->
     <section id="saveCenterPage" hidden>
-      <button class="btn btn-back back-to-main" data-i18n="backMain">← 메인으로</button>
+      <button class="btn btn-back back-to-main" type="button" data-i18n="backMain">← 메인으로</button>
 
       <section class="status-box">
         <p class="info-title" style="font-size: 1.1rem; font-weight: bold; color: #333;" data-i18n="saveCenterTitle">💾 데이터 저장 & 관리 센터</p>
@@ -209,16 +204,8 @@
           <h3>📊 엑셀 (CSV) 데이터</h3>
           <p>전체 운행 기록, 건수, 총수입 텍스트 내역을 엑셀용 CSV 파일로 내보냅니다.</p>
           <div class="save-card-btns">
-            <button id="exportCsvBtn" class="btn btn-summary" style="height:36px; font-size:0.88rem; flex:2;">💾 엑셀 파일 저장</button>
-            <button id="clearHistoryBtn" class="btn btn-end" style="height:36px; font-size:0.88rem; flex:1;">🗑 기록 비우기</button>
-          </div>
-        </div>
-
-        <div class="save-card">
-          <h3>📄 PDF 운행 일지 보고서</h3>
-          <p>계기판 증빙 사진과 정산 내역이 포함된 제출용 보고서를 출력/저장합니다.</p>
-          <div class="save-card-btns">
-            <button id="printPdfBtn" class="btn btn-start" style="height:36px; font-size:0.88rem; flex:1;">🖨 보고서 출력 / PDF 저장</button>
+            <button id="exportCsvBtn" class="btn btn-summary" type="button" style="height:36px; font-size:0.88rem; flex:2;">💾 엑셀 파일 저장</button>
+            <button id="clearHistoryBtn" class="btn btn-end" type="button" style="height:36px; font-size:0.88rem; flex:1;">🗑 기록 비우기</button>
           </div>
         </div>
       </section>
@@ -227,7 +214,7 @@
     <!-- 히스토리 화면 -->
     <section id="historyPage" hidden>
       <div id="historyMainView">
-        <button class="btn btn-back back-to-main" data-i18n="backMain">← 메인으로</button>
+        <button class="btn btn-back back-to-main" type="button" data-i18n="backMain">← 메인으로</button>
         <section class="status-box">
           <p class="info-title" style="font-weight: bold; color: #333; margin-bottom: 6px; font-size: 1rem;" data-i18n="addRecord">➕ 수동 기록 추가</p>
           <div class="row-inputs align-end">
@@ -237,14 +224,14 @@
           </div>
         </section>
         
-        <!-- 동적으로 히스토리 내역이 표시될 영역 -->
+        <!-- 히스토리 목록 구획 -->
         <div id="historyListArea"></div>
       </div>
     </section>
 
     <!-- 비용 기록 화면 -->
     <section id="expensePage" hidden>
-      <button class="btn btn-back back-to-main" data-i18n="backMain">← 메인으로</button>
+      <button class="btn btn-back back-to-main" type="button" data-i18n="backMain">← 메인으로</button>
       <section class="status-box">
         <p class="info-title" style="font-size: 1rem; font-weight: bold; margin-bottom: 6px;" data-i18n="expenseRecord">⛽ 비용 기록</p>
         <label class="info-title" for="expenseDate" data-i18n="date">날짜</label><input id="expenseDate" type="date">
@@ -259,7 +246,7 @@
         <img id="modalImg" class="modal-img" src="" alt="계기판 사진">
 
         <div class="modal-btn-group">
-          <button id="modalCloseBtn" class="btn-modal btn-modal-close">✖ 닫기</button>
+          <button id="modalCloseBtn" class="btn-modal btn-modal-close" type="button">✖ 닫기</button>
         </div>
       </div>
     </div>
@@ -288,14 +275,30 @@
 
     const KEYS = { HISTORY: "RiderLog_History", EXPENSE: "RiderLog_Expenses" };
     const Storage = {
-      get(key) { try { return JSON.parse(localStorage.getItem(KEYS[key])) || []; } catch { return []; } },
-      set(key, data) { try { localStorage.setItem(KEYS[key], JSON.stringify(data)); } catch (e) { console.error("Storage Error:", e); } },
-      remove(key) { localStorage.removeItem(KEYS[key]); }
+      get(key) {
+        try {
+          const data = localStorage.getItem(KEYS[key]);
+          return data ? JSON.parse(data) : [];
+        } catch (e) {
+          console.error("Read Storage Error:", e);
+          return [];
+        }
+      },
+      set(key, data) {
+        try {
+          localStorage.setItem(KEYS[key], JSON.stringify(data));
+        } catch (e) {
+          console.error("Save Storage Error:", e);
+        }
+      },
+      remove(key) {
+        localStorage.removeItem(KEYS[key]);
+      }
     };
 
     const $ = (id) => document.getElementById(id);
 
-    // 수입 및 시급 계산
+    // 수입 및 시급 실시간 계산
     function calculateSummary() {
       const bCnt = Number($("baeminCount").value) || 0;
       const bInc = Number($("baeminIncome").value) || 0;
@@ -317,6 +320,8 @@
       if (endOdo > startOdo) {
         dist = parseFloat((endOdo - startOdo).toFixed(1));
         $("distance").value = dist;
+      } else {
+        $("distance").value = "";
       }
 
       const avg = totalCnt > 0 ? Math.round(totalInc / totalCnt) : 0;
@@ -334,7 +339,39 @@
       }
     }
 
-    // OCR 카메라 및 이미지 로드
+    // 메인 입력 폼 초기화 함수 (정산 후 실행)
+    function resetMainForm() {
+      startTimestamp = null;
+      endTimestamp = null;
+      startPhotoData = "";
+      endPhotoData = "";
+
+      $("status").textContent = "🟡 대기 중";
+      $("startTime").textContent = "-";
+      $("endTime").textContent = "-";
+      $("rideTime").textContent = "-";
+
+      $("startOdometer").value = "";
+      $("endOdometer").value = "";
+      $("startPhotoPreview").innerHTML = "";
+      $("endPhotoPreview").innerHTML = "";
+
+      $("baeminCount").value = "";
+      $("baeminIncome").value = "";
+      $("missionIncome").value = "";
+      $("coupangCount").value = "";
+      $("coupangIncome").value = "";
+      $("coupangMissionIncome").value = "";
+
+      $("deliveryCount").textContent = "0건";
+      $("distance").value = "";
+      $("totalIncomeDisplay").textContent = "0원";
+      $("avgPrice").textContent = "0원";
+      $("hourPay").textContent = "0원";
+      $("kmPay").textContent = "0원";
+    }
+
+    // OCR 카메라 및 파일 로드
     function setupOCR(inputId, targetInputId, previewId, photoType) {
       $(inputId).addEventListener("change", function (e) {
         const file = e.target.files[0];
@@ -348,14 +385,16 @@
 
           $(previewId).innerHTML = `<img src="${base64Img}" class="photo-preview-img" alt="미리보기">`;
 
-          Tesseract.recognize(base64Img, 'eng')
-            .then(({ data: { text } }) => {
-              const numbers = text.replace(/[^0-9.]/g, '');
-              if (numbers) {
-                $(targetInputId).value = numbers;
-                calculateSummary();
-              }
-            });
+          if (window.Tesseract) {
+            Tesseract.recognize(base64Img, 'eng')
+              .then(({ data: { text } }) => {
+                const numbers = text.replace(/[^0-9.]/g, '');
+                if (numbers) {
+                  $(targetInputId).value = numbers;
+                  calculateSummary();
+                }
+              }).catch(err => console.error(err));
+          }
         };
         reader.readAsDataURL(file);
       });
@@ -366,7 +405,7 @@
       if ($("historyCountText")) $("historyCountText").textContent = `(저장된 기록: ${count}건)`;
     }
 
-    // 저장된 히스토리 화면에 출력
+    // 히스토리 목록 렌더링
     function renderHistoryList() {
       const historyList = Storage.get("HISTORY");
       const container = $("historyListArea");
@@ -398,31 +437,29 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      // 초기화
       updateTexts();
       renderHistoryList();
 
-      // 수동 입력 날짜 오늘날짜로 세팅
-      if($("manualDate")) $("manualDate").value = new Date().toISOString().split('T')[0];
+      if ($("manualDate")) $("manualDate").value = new Date().toISOString().split('T')[0];
 
-      // OCR 핸들러 바인딩
       setupOCR("startPhotoInput", "startOdometer", "startPhotoPreview", "start");
       setupOCR("endPhotoInput", "endOdometer", "endPhotoPreview", "end");
 
-      // 입력 시 실시간 정산 반영
       document.querySelectorAll(".calc-trigger, #startOdometer, #endOdometer").forEach(el => {
         el.addEventListener("input", calculateSummary);
       });
 
       // [시작] 버튼
-      $("startBtn").onclick = () => {
+      $("startBtn").onclick = (e) => {
+        e.preventDefault();
         startTimestamp = new Date();
         $("status").textContent = "🟢 진행 중";
         $("startTime").textContent = startTimestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       };
 
       // [종료] 버튼
-      $("endBtn").onclick = () => {
+      $("endBtn").onclick = (e) => {
+        e.preventDefault();
         if (!startTimestamp) return alert("먼저 [시작] 버튼을 눌러주세요.");
         endTimestamp = new Date();
         $("status").textContent = "🔴 종료됨";
@@ -433,8 +470,10 @@
         calculateSummary();
       };
 
-      // [정산] 버튼 클릭 시 기록 저장 및 히스토리로 이동
-      $("summaryBtn").onclick = () => {
+      // [정산] 버튼 - 저장 및 메인 화면 초기화
+      $("summaryBtn").onclick = (e) => {
+        e.preventDefault();
+
         const bCnt = Number($("baeminCount").value) || 0;
         const bInc = Number($("baeminIncome").value) || 0;
         const bMis = Number($("missionIncome").value) || 0;
@@ -473,23 +512,29 @@
           endPhoto: endPhotoData
         };
 
+        // localStorage 저장
         const historyList = Storage.get("HISTORY");
         historyList.unshift(newRecord);
         Storage.set("HISTORY", historyList);
 
+        // 카운트 및 UI 업그레이드
         updateHistoryCount();
         renderHistoryList();
 
-        alert("정산 기록이 저장되었습니다!");
+        alert("정산 기록이 정상적으로 저장되었습니다!");
 
-        // 기록 화면으로 이동
+        // 메인 화면 초기화
+        resetMainForm();
+
+        // 기록 화면으로 전환
         $("mainPage").hidden = true;
         $("historyPage").hidden = false;
       };
 
-      // 수동 기록 저장
+      // 수동 기록 추가
       if ($("saveManualHistoryBtn")) {
-        $("saveManualHistoryBtn").onclick = () => {
+        $("saveManualHistoryBtn").onclick = (e) => {
+          e.preventDefault();
           const mDate = $("manualDate").value;
           const mTime = $("manualRideMinutes").value;
 
@@ -534,7 +579,7 @@
         };
       });
 
-      // 언어 전환
+      // 언어 스위치
       $("langToggleBtn").onclick = () => {
         currentLang = currentLang === "ko" ? "en" : "ko";
         updateTexts();
