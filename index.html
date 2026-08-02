@@ -78,9 +78,12 @@
     .modal-img { width: 100%; max-height: 180px; object-fit: contain; border-radius: 8px; border: 1px solid #ddd; background: #000; margin: 4px 0 8px 0; }
     .modal-btn-close { background-color: #eee; color: #333; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; padding: 4px 10px; font-size: 0.9rem; }
     
-    .filter-btn-group { display: flex; gap: 4px; margin-top: 6px; }
-    .btn-filter { flex: 1; height: 34px; border: 1px solid #ccc; background: #fff; border-radius: 6px; font-size: 0.88rem; font-weight: 600; cursor: pointer; }
-    .btn-filter.active { background: #1565c0; color: #fff; border-color: #1565c0; }
+    /* 필터 드롭다운 레이아웃 */
+    .filter-dropdown-group { display: flex; gap: 4px; margin-top: 6px; align-items: center; }
+    .filter-dropdown-group select { flex: 1; height: 36px; padding: 0 4px; font-size: 0.88rem; font-weight: 600; border-radius: 6px; border: 1px solid #ccc; background-color: #fff; text-align: center; }
+    .btn-filter-all { flex: 1; height: 36px; border: 1px solid #ccc; background: #fff; border-radius: 6px; font-size: 0.88rem; font-weight: 600; cursor: pointer; }
+    .btn-filter-all.active { background: #1565c0; color: #fff; border-color: #1565c0; }
+    
     .btn-del { background: #ffcdd2; color: #c62828; border: none; border-radius: 4px; padding: 2px 8px; font-size: 0.8rem; cursor: pointer; }
     .btn-detail-view { background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; border-radius: 4px; padding: 4px 8px; font-size: 0.82rem; font-weight: bold; cursor: pointer; }
     
@@ -308,14 +311,14 @@
         </div>
       </section>
 
-      <!-- 기간 선택 필터 -->
+      <!-- [수정] 년/월/일/전체 기간 선택 드롭다운 필터 -->
       <section class="status-box">
         <p class="info-title" style="font-weight: bold; color: #333;" data-i18n="periodSelect">📅 기간 선택</p>
-        <div class="filter-btn-group">
-          <button class="btn-filter" data-filter="today" data-i18n="filterToday">오늘</button>
-          <button class="btn-filter" data-filter="week" data-i18n="filterWeek">이번 주</button>
-          <button class="btn-filter" data-filter="month" data-i18n="filterMonth">이번 달</button>
-          <button class="btn-filter active" data-filter="all" data-i18n="filterAll">전체</button>
+        <div class="filter-dropdown-group">
+          <select id="filterYearSelect"></select>
+          <select id="filterMonthSelect"></select>
+          <select id="filterDaySelect"></select>
+          <button id="filterAllBtn" class="btn-filter-all" data-i18n="filterAll">전체</button>
         </div>
       </section>
 
@@ -445,113 +448,98 @@
     let endTimestamp = null;
     let startPhotoData = "";
     let endPhotoData = "";
-    let currentFilter = "all";
+    let isAllFilter = false;
     let currentEditingId = null;
 
-    // 완벽 다국어 사전 (메인, 저장, 기록, 비용 및 모든 플레이스홀더 포함)
+    // 완벽 다국어 사전
     const i18nData = {
       ko: {
-        // 단위 및 공통
         unitCount: "건", unitWon: "원", unitMin: "분", unitKm: "km", unitPerKm: "km당",
         savedRecords: "(저장된 기록: {n}건)",
         
-        // 메인 화면
         subTitle: "기록 및 관리", start: "시작", end: "종료", summary: "정산", history: "기록", expense: "비용", saveCenter: "저장", 
         statusLabel: "상태:", statusReady: "🟡 대기 중", statusRunning: "🟢 진행 중", statusEnded: "🔴 종료됨", 
         startTime: "시작 시간", endTime: "종료 시간", elapsedTime: "소요 시간", startOdo: "시작 계기판 (km)", endOdo: "종료 계기판 (km)", 
         baeminLabel: "🛵 배민", coupangLabel: "🚀 쿠팡", count: "총 건수", distance: "거리 (km)", totalIncome: "총수입", 
         avgPrice: "평균 단가", hourly: "시급", perKm: "km당 수입", backMain: "← 메인으로",
 
-        // 기록 (히스토리 & 수동입력)
         addManualRecord: "➕ 수동 기록 추가", btnSaveRecord: "💾 저장하기", date: "날짜", timeMin: "시간(분)", manualStart: "시작 (km)", manualEnd: "종료 (km)",
-        periodSelect: "📅 기간 선택", filterToday: "오늘", filterWeek: "이번 주", filterMonth: "이번 달", filterAll: "전체",
+        periodSelect: "📅 기간 선택", filterAll: "전체",
         selectedStats: "📊 선택 통계", btnViewDetail: "🔽 상세 보기", btnHideDetail: "🔼 접기", savedHistoryList: "📚 저장된 목록",
         noHistoryMsg: "선택한 기간의 기록이 없습니다.", btnDetail: "상세보기",
         statTotal: "총 건수 / 총 수입", statDist: "총 거리 / km당 단가 / 평균 단가", statHourly: "시급", statSelPeriod: "선택 기간",
 
-        // 모달 & 수정
         modalPhotoTitle: "🖼 계기판 사진 크게보기", modalClose: "✖ 닫기", modalDetailTitle: "🔍 상세 정보", editRideMins: "⏱️ 운행 시간 (분)",
         countShort: "건수", incomeShort: "수입", missionShort: "미션", startPhotoTitle: "📷 시작 계기판 사진", endPhotoTitle: "📷 종료 계기판 사진",
         btnEditSave: "💾 수정 저장", btnDelete: "🗑️ 삭제",
 
-        // 비용 화면
         expenseRecord: "⛽ 비용 기록 추가", category: "항목", optFuel: "⛽ 주유비", optMaint: "🔧 정비비", optInsur: "🛡️ 보험료", optEtc: "📝 기타",
         amount: "금액 (원)", memo: "메모 (선택)", saveExpense: "비용 저장", expenseListTitle: "💳 지출 내역", totalExpense: "총", noExpenseMsg: "지출 내역이 없습니다.",
         memoEmpty: "메모 없음",
 
-        // 저장 센터
         saveCenterHeader: "💾 데이터 저장 & 관리 센터",
         saveCsvTitle: "📊 엑셀 (CSV) 데이터", saveCsvDesc: "전체 운행 기록, 건수, 총수입 텍스트 내역을 엑셀용 CSV 파일로 내보냅니다.", btnExportCsv: "💾 엑셀 파일 저장", btnClearHistory: "🗑 기록 비우기",
         savePdfTitle: "📄 PDF 운행 일지 보고서", savePdfDesc: "계기판 증빙 사진과 정산 내역이 포함된 제출용 보고서를 출력/저장합니다.", btnPrintPdf: "🖨 보고서 출력 / PDF 저장",
         savePhotoTitle: "🖼 계기판 사진 데이터", savePhotoDesc: "저장된 모든 시작/종료 계기판 사진들을 스마트폰에 다운로드하거나 삭제합니다.", btnDownloadPhotos: "📦 사진 파일 저장", btnClearPhotos: "🗑 사진만 비우기",
         saveExpenseTitle: "⛽ 비용 내역 데이터", saveExpenseDesc: "주유, 보험, 정비 등 지출 내역만 선택하여 백업하거나 초기화합니다.", btnExportExpense: "💾 비용 내역 저장", btnClearExpense: "🗑 비용만 비우기",
 
-        // Placeholders
         phOdoStart: "예: 146061", phOdoEnd: "예: 146103", phCount: "건수", phIncome: "수입", phMission: "미션", phAuto: "자동계산",
-        phMin: "예: 180", phStartDist: "시작 거리", phEndDist: "종료 거리", phAmount: "예: 15000", phMemo: "예: 시간제 보험 / 종합보험", phEditMins: "운행 분 단위 입력"
+        phMin: "예: 180", phStartDist: "시작 거리", phEndDist: "종료 거리", phAmount: "예: 15000", phMemo: "예: 시간제 보험 / 종합보험", phEditMins: "운행 분 단위 입력",
+        optAllYears: "전체 년", optAllMonths: "전체 월", optAllDays: "전체 일"
       },
       en: {
-        // Units & Common
         unitCount: " orders", unitWon: " KRW", unitMin: " mins", unitKm: "km", unitPerKm: "/km",
         savedRecords: "(Saved Records: {n})",
         
-        // Main
         subTitle: "Records & Management", start: "Start", end: "End", summary: "Summary", history: "History", expense: "Expense", saveCenter: "Save", 
         statusLabel: "Status:", statusReady: "🟡 Ready", statusRunning: "🟢 Running", statusEnded: "🔴 Ended", 
         startTime: "Start Time", endTime: "End Time", elapsedTime: "Elapsed", startOdo: "Start Odo (km)", endOdo: "End Odo (km)", 
         baeminLabel: "🛵 Baemin", coupangLabel: "🚀 Coupang", count: "Total Count", distance: "Distance (km)", totalIncome: "Total Income", 
         avgPrice: "Avg Price", hourly: "Hourly Pay", perKm: "Pay per km", backMain: "← Main Menu",
 
-        // History
         addManualRecord: "➕ Add Manual Record", btnSaveRecord: "💾 Save", date: "Date", timeMin: "Time (min)", manualStart: "Start (km)", manualEnd: "End (km)",
-        periodSelect: "📅 Select Period", filterToday: "Today", filterWeek: "This Week", filterMonth: "This Month", filterAll: "All",
+        periodSelect: "📅 Select Period", filterAll: "All",
         selectedStats: "📊 Statistics", btnViewDetail: "🔽 View Details", btnHideDetail: "🔼 Hide Details", savedHistoryList: "📚 Saved Records",
         noHistoryMsg: "No records found for the selected period.", btnDetail: "Details",
         statTotal: "Total Count / Total Income", statDist: "Total Dist / Pay per km / Avg Price", statHourly: "Hourly Pay", statSelPeriod: "Period",
 
-        // Modals
         modalPhotoTitle: "🖼 Odometer Photo View", modalClose: "✖ Close", modalDetailTitle: "🔍 Detail Information", editRideMins: "⏱️ Ride Minutes",
         countShort: "Count", incomeShort: "Income", missionShort: "Bonus", startPhotoTitle: "📷 Start Photo", endPhotoTitle: "📷 End Photo",
         btnEditSave: "💾 Save Changes", btnDelete: "🗑️ Delete",
 
-        // Expense
         expenseRecord: "⛽ Add Expense Record", category: "Category", optFuel: "⛽ Fuel", optMaint: "🔧 Maintenance", optInsur: "🛡️ Insurance", optEtc: "📝 Others",
         amount: "Amount (KRW)", memo: "Memo (Opt)", saveExpense: "Save Expense", expenseListTitle: "💳 Expense List", totalExpense: "Total", noExpenseMsg: "No expense records.",
         memoEmpty: "No Memo",
 
-        // Save Center
         saveCenterHeader: "💾 Storage & Data Center",
         saveCsvTitle: "📊 Excel (CSV) Data", saveCsvDesc: "Export all ride records, count, and income history to Excel CSV.", btnExportCsv: "💾 Export CSV File", btnClearHistory: "🗑 Clear Records",
         savePdfTitle: "📄 PDF Ride Log Report", savePdfDesc: "Print or save submission-ready report with odometer photos.", btnPrintPdf: "🖨 Print / Save PDF",
         savePhotoTitle: "🖼 Odometer Photo Data", savePhotoDesc: "Download all saved odometer photos to your device or delete them.", btnDownloadPhotos: "📦 Save Photo Files", btnClearPhotos: "🗑 Clear Photos Only",
         saveExpenseTitle: "⛽ Expense History Data", saveExpenseDesc: "Backup or reset only fuel, insurance, and maintenance expenses.", btnExportExpense: "💾 Export Expense CSV", btnClearExpense: "🗑 Clear Expense Only",
 
-        // Placeholders
         phOdoStart: "ex: 146061", phOdoEnd: "ex: 146103", phCount: "Count", phIncome: "Income", phMission: "Bonus", phAuto: "Auto Calc",
-        phMin: "ex: 180", phStartDist: "Start Dist", phEndDist: "End Dist", phAmount: "ex: 15000", phMemo: "ex: Hourly Insurance", phEditMins: "Enter minutes"
+        phMin: "ex: 180", phStartDist: "Start Dist", phEndDist: "End Dist", phAmount: "ex: 15000", phMemo: "ex: Hourly Insurance", phEditMins: "Enter minutes",
+        optAllYears: "All Years", optAllMonths: "All Months", optAllDays: "All Days"
       }
     };
 
     function t(key) { return i18nData[currentLang][key] || key; }
 
     function updateTexts() {
-      // 1. 일반 textContent 변환
       document.querySelectorAll("[data-i18n]").forEach(el => {
         const key = el.getAttribute("data-i18n");
         if (i18nData[currentLang][key]) el.textContent = i18nData[currentLang][key];
       });
 
-      // 2. Placeholder 변환
       document.querySelectorAll("[data-i18n-ph]").forEach(el => {
         const key = el.getAttribute("data-i18n-ph");
         if (i18nData[currentLang][key]) el.placeholder = i18nData[currentLang][key];
       });
 
-      // 3. 언어 토글 버튼 텍스트
       document.getElementById("langToggleBtn").textContent = currentLang === "ko" ? "🌐 EN" : "🌐 KR";
 
-      // 4. 동적 UI 재렌더링
       updateHistoryCount();
+      initFilterDropdowns();
       renderHistoryList();
       renderExpenseList();
       
@@ -753,21 +741,74 @@
       }
     }
 
+    // [추가] 년, 월, 일 드롭다운 메뉴 초기화 기능
+    function initFilterDropdowns() {
+      const history = Storage.get("HISTORY");
+      const currentYear = new Date().getFullYear();
+      const yearSelect = $("filterYearSelect");
+      const monthSelect = $("filterMonthSelect");
+      const daySelect = $("filterDaySelect");
+
+      if (!yearSelect || !monthSelect || !daySelect) return;
+
+      const prevY = yearSelect.value;
+      const prevM = monthSelect.value;
+      const prevD = daySelect.value;
+
+      // 1. 연도 설정 (저장 데이터 연도들 + 현재 연도)
+      const years = new Set([currentYear]);
+      history.forEach(i => {
+        if (i.date) {
+          const y = parseInt(i.date.split('-')[0]);
+          if (y) years.add(y);
+        }
+      });
+
+      let yearHtml = `<option value="ALL">${t('optAllYears')}</option>`;
+      Array.from(years).sort((a, b) => b - a).forEach(y => {
+        yearHtml += `<option value="${y}">${y}${currentLang === 'ko' ? '년' : ''}</option>`;
+      });
+      yearSelect.innerHTML = yearHtml;
+
+      // 2. 월 설정
+      let monthHtml = `<option value="ALL">${t('optAllMonths')}</option>`;
+      for (let m = 1; m <= 12; m++) {
+        monthHtml += `<option value="${m}">${m}${currentLang === 'ko' ? '월' : ''}</option>`;
+      }
+      monthSelect.innerHTML = monthHtml;
+
+      // 3. 일 설정
+      let dayHtml = `<option value="ALL">${t('optAllDays')}</option>`;
+      for (let d = 1; d <= 31; d++) {
+        dayHtml += `<option value="${d}">${d}${currentLang === 'ko' ? '일' : ''}</option>`;
+      }
+      daySelect.innerHTML = dayHtml;
+
+      if (!isAllFilter && prevY) yearSelect.value = prevY;
+      if (!isAllFilter && prevM) monthSelect.value = prevM;
+      if (!isAllFilter && prevD) daySelect.value = prevD;
+
+      if (yearSelect.value === "") yearSelect.value = currentYear;
+      if (monthSelect.value === "") monthSelect.value = new Date().getMonth() + 1;
+    }
+
+    // [수정] 드롭다운 기반 기간 필터링 로직
     function getFilteredHistory() {
       const list = Storage.get("HISTORY");
-      if (currentFilter === "all") return list;
+      if (isAllFilter) return list;
 
-      const now = new Date();
+      const selY = $("filterYearSelect").value;
+      const selM = $("filterMonthSelect").value;
+      const selD = $("filterDaySelect").value;
+
       return list.filter(item => {
-        const itemDate = new Date(item.date);
-        if (currentFilter === "today") {
-          return itemDate.toDateString() === now.toDateString();
-        } else if (currentFilter === "week") {
-          const diffDays = (now - itemDate) / (1000 * 3600 * 24);
-          return diffDays >= 0 && diffDays <= 7;
-        } else if (currentFilter === "month") {
-          return itemDate.getFullYear() === now.getFullYear() && itemDate.getMonth() === now.getMonth();
-        }
+        if (!item.date) return false;
+        const [y, m, d] = item.date.split('-').map(v => parseInt(v));
+
+        if (selY !== "ALL" && parseInt(selY) !== y) return false;
+        if (selM !== "ALL" && parseInt(selM) !== m) return false;
+        if (selD !== "ALL" && parseInt(selD) !== d) return false;
+
         return true;
       });
     }
@@ -809,9 +850,17 @@
         <div style="color:#1565c0; font-weight:bold; margin-top:2px;">${t('statHourly')}: ${hourly.toLocaleString()}${t('unitWon')}</div>
       `;
 
-      const filterNames = { today: t('filterToday'), week: t('filterWeek'), month: t('filterMonth'), all: t('filterAll') };
+      let periodLabel = t('filterAll');
+      if (!isAllFilter) {
+        const sy = $("filterYearSelect").value;
+        const sm = $("filterMonthSelect").value;
+        const sd = $("filterDaySelect").value;
+        periodLabel = `${sy !== 'ALL' ? sy + (currentLang === 'ko' ? '년 ' : ' ') : ''}${sm !== 'ALL' ? sm + (currentLang === 'ko' ? '월 ' : ' ') : ''}${sd !== 'ALL' ? sd + (currentLang === 'ko' ? '일' : '') : ''}`.trim();
+        if (!periodLabel) periodLabel = t('filterAll');
+      }
+
       $("statsDetailArea").innerHTML = `
-        <div>📅 <strong>${t('statSelPeriod')}:</strong> ${filterNames[currentFilter]}</div>
+        <div>📅 <strong>${t('statSelPeriod')}:</strong> ${periodLabel}</div>
         <div>📊 <strong>${t('statTotal')}:</strong> ${totalCnt}${t('unitCount')} / ${totalInc.toLocaleString()}${t('unitWon')}</div>
         <div>${t('baeminLabel')}: ${bCnt}${t('unitCount')} · ${bInc.toLocaleString()}${t('unitWon')}</div>
         <div>${t('coupangLabel')}: ${cCnt}${t('unitCount')} · ${cInc.toLocaleString()}${t('unitWon')}</div>
@@ -954,6 +1003,7 @@
       if ($("manualDate")) $("manualDate").value = today;
       if ($("expenseDate")) $("expenseDate").value = today;
 
+      initFilterDropdowns();
       updateTexts();
 
       setupOCR("startPhotoInput", "startOdometer", "startPhotoPreview", "start");
@@ -1043,6 +1093,7 @@
           
           if (Storage.set("HISTORY", historyList)) {
             updateHistoryCount();
+            initFilterDropdowns();
             renderHistoryList();
             alert(currentLang === 'ko' ? "정산이 성공적으로 저장되었습니다!" : "Summary saved successfully!");
 
@@ -1127,6 +1178,7 @@
           Storage.set("HISTORY", historyList);
 
           updateHistoryCount();
+          initFilterDropdowns();
           renderHistoryList();
           alert(currentLang === 'ko' ? "수동 기록이 추가되었습니다." : "Manual record added.");
 
@@ -1178,6 +1230,7 @@
         Storage.set("HISTORY", list);
         alert(currentLang === 'ko' ? "기록이 수정되었습니다." : "Record updated.");
         $("historyDetailModal").style.display = "none";
+        initFilterDropdowns();
         renderHistoryList();
       };
 
@@ -1188,19 +1241,31 @@
           list = list.filter(x => x.id !== currentEditingId);
           Storage.set("HISTORY", list);
           updateHistoryCount();
+          initFilterDropdowns();
           renderHistoryList();
           $("historyDetailModal").style.display = "none";
         }
       };
 
-      document.querySelectorAll(".btn-filter").forEach(btn => {
-        btn.onclick = (e) => {
-          document.querySelectorAll(".btn-filter").forEach(b => b.classList.remove("active"));
-          e.target.classList.add("active");
-          currentFilter = e.target.getAttribute("data-filter");
+      // [추가] 년/월/일 드롭다운 체인지 이벤트 연동
+      const dropdowns = ["filterYearSelect", "filterMonthSelect", "filterDaySelect"];
+      dropdowns.forEach(id => {
+        $(id).onchange = () => {
+          isAllFilter = false;
+          $("filterAllBtn").classList.remove("active");
           renderHistoryList();
         };
       });
+
+      // [추가] 전체 버튼 동작 설정
+      $("filterAllBtn").onclick = () => {
+        isAllFilter = true;
+        $("filterAllBtn").classList.add("active");
+        $("filterYearSelect").value = "ALL";
+        $("filterMonthSelect").value = "ALL";
+        $("filterDaySelect").value = "ALL";
+        renderHistoryList();
+      };
 
       $("toggleDetailStatsBtn").onclick = () => {
         const detailArea = $("statsDetailArea");
@@ -1292,6 +1357,7 @@
           if (confirm(currentLang === 'ko' ? "정말로 모든 운행 기록을 삭제하시겠습니까?" : "Clear all ride records?")) {
             Storage.remove("HISTORY");
             updateHistoryCount();
+            initFilterDropdowns();
             renderHistoryList();
             alert(currentLang === 'ko' ? "운행 기록이 모두 삭제되었습니다." : "All ride records deleted.");
           }
