@@ -478,7 +478,7 @@
         saveExpenseTitle: "⛽ 비용 내역 데이터", saveExpenseDesc: "주유, 보험, 정비 등 지출 내역만 선택하여 백업하거나 초기화합니다.", btnExportExpense: "💾 비용 내역 저장", btnClearExpense: "🗑 비용만 비우기",
         phOdoStart: "예: 146061", phOdoEnd: "예: 146103", phCount: "건수", phIncome: "수입", phMission: "미션", phAuto: "자동계산",
         phMin: "예: 180", phStartDist: "시작 거리", phEndDist: "종료 거리", phAmount: "예: 15000", phMemo: "예: 시간제 보험 / 종합보험", phEditMins: "운행 분 단위 입력",
-        optAllYears: "전체 년", optAllMonths: "전체 월", optAllDays: "전체 일"
+        optAllYears: "년", optAllMonths: "월", optAllDays: "일"
       },
       en: {
         unitCount: " orders", unitWon: " KRW", unitMin: " mins", unitKm: "km", unitPerKm: "/km",
@@ -506,7 +506,7 @@
         saveExpenseTitle: "⛽ Expense History Data", saveExpenseDesc: "Backup or reset only fuel, insurance, and maintenance expenses.", btnExportExpense: "💾 Export Expense CSV", btnClearExpense: "🗑 Clear Expense Only",
         phOdoStart: "ex: 146061", phOdoEnd: "ex: 146103", phCount: "Count", phIncome: "Income", phMission: "Bonus", phAuto: "Auto Calc",
         phMin: "ex: 180", phStartDist: "Start Dist", phEndDist: "End Dist", phAmount: "ex: 15000", phMemo: "ex: Hourly Insurance", phEditMins: "Enter minutes",
-        optAllYears: "All Years", optAllMonths: "All Months", optAllDays: "All Days"
+        optAllYears: "Year", optAllMonths: "Month", optAllDays: "Day"
       }
     };
 
@@ -775,23 +775,32 @@
       if (monthSelect.value === "") monthSelect.value = new Date().getMonth() + 1;
     }
 
+    /* 최근 날짜순(내림차순) 정렬 적용된 필터 함수 */
     function getFilteredHistory() {
       const list = Storage.get("HISTORY");
-      if (isAllFilter) return list;
+      let filtered = list;
 
-      const selY = $("filterYearSelect").value;
-      const selM = $("filterMonthSelect").value;
-      const selD = $("filterDaySelect").value;
+      if (!isAllFilter) {
+        const selY = $("filterYearSelect").value;
+        const selM = $("filterMonthSelect").value;
+        const selD = $("filterDaySelect").value;
 
-      return list.filter(item => {
-        if (!item.date) return false;
-        const [y, m, d] = item.date.split('-').map(v => parseInt(v));
+        filtered = list.filter(item => {
+          if (!item.date) return false;
+          const [y, m, d] = item.date.split('-').map(v => parseInt(v));
 
-        if (selY !== "ALL" && parseInt(selY) !== y) return false;
-        if (selM !== "ALL" && parseInt(selM) !== m) return false;
-        if (selD !== "ALL" && parseInt(selD) !== d) return false;
+          if (selY !== "ALL" && parseInt(selY) !== y) return false;
+          if (selM !== "ALL" && parseInt(selM) !== m) return false;
+          if (selD !== "ALL" && parseInt(selD) !== d) return false;
 
-        return true;
+          return true;
+        });
+      }
+
+      // 최근 날짜순 정렬 (동일 날짜일 경우 최신 생성 id 기준)
+      return filtered.sort((a, b) => {
+        const dateDiff = new Date(b.date) - new Date(a.date);
+        return dateDiff !== 0 ? dateDiff : (b.id || 0) - (a.id || 0);
       });
     }
 
@@ -921,6 +930,9 @@
       const container = $("expenseListArea");
       if (!container) return;
 
+      // 최근 날짜순 정렬
+      expenses.sort((a, b) => new Date(b.date) - new Date(a.date));
+
       const totalExpense = expenses.reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
       if (expenses.length === 0) {
@@ -1030,7 +1042,6 @@
         calculateSummary();
       };
 
-      /* [수정안 A] 메인 정산 저장 로직: pure 수입과 미션을 분리 저장 */
       $("summaryBtn").onclick = (e) => {
         if(e) { e.preventDefault(); e.stopPropagation(); }
 
@@ -1060,11 +1071,11 @@
             endOdo: endOdo,
             distance: dist,
             baeminCount: bCnt,
-            baeminIncome: bInc,       // 수정: pure 수입만 저장
-            baeminMission: bMis,      // 미션 별도 저장
+            baeminIncome: bInc,
+            baeminMission: bMis,
             coupangCount: cCnt,
-            coupangIncome: cInc,     // 수정: pure 수입만 저장
-            coupangMission: cMis,     // 미션 별도 저장
+            coupangIncome: cInc,
+            coupangMission: cMis,
             totalCount: totalCnt,
             totalIncome: totalInc,
             startPhoto: startPhotoData,
@@ -1119,7 +1130,6 @@
         }
       };
 
-      /* [수정안 A] 수동 기록 저장 로직: pure 수입과 미션을 분리 저장 */
       if ($("saveManualHistoryBtn")) {
         $("saveManualHistoryBtn").onclick = (e) => {
           if(e) e.preventDefault();
@@ -1148,13 +1158,13 @@
             endOdo: endOdo,
             distance: dist,
             baeminCount: bCnt,
-            baeminIncome: bInc,       // 수정: pure 수입만 저장
-            baeminMission: bMis,      // 미션 별도 저장
+            baeminIncome: bInc,
+            baeminMission: bMis,
             coupangCount: cCnt,
-            coupangIncome: cInc,     // 수정: pure 수입만 저장
-            coupangMission: cMis,     // 미션 별도 저장
+            coupangIncome: cInc,
+            coupangMission: cMis,
             totalCount: bCnt + cCnt,
-            totalIncome: bInc + bMis + cInc + cMis // 합계 계산 시에만 미션 포함
+            totalIncome: bInc + bMis + cInc + cMis
           };
 
           const historyList = Storage.get("HISTORY");
@@ -1179,7 +1189,6 @@
         };
       }
 
-      /* [수정안 A] 상세보기 모달 수정 저장 로직: pure 수입과 미션 분리 수정 */
       $("btnSaveDetailEdit").onclick = () => {
         if (!currentEditingId) return;
         const list = Storage.get("HISTORY");
@@ -1197,20 +1206,20 @@
 
         const startOdo = parseFloat($("editStartOdo").value) || 0;
         const endOdo = parseFloat($("editEndOdo").value) || 0;
-        const dist = (endOdo > startOdo) ? parseFloat((endOdo - startOdo).toFixed(1)) : 0;
+        const dist = (endOdo > startOdo) ? parseFloat((editOdo > startOdo) ? (endOdo - startOdo).toFixed(1) : 0) : 0;
 
         list[idx].rideMinutes = `${mTime}${t('unitMin')}`;
         list[idx].baeminCount = bCnt;
-        list[idx].baeminIncome = bInc;      // 수정: pure 수입
+        list[idx].baeminIncome = bInc;
         list[idx].baeminMission = bMis;
         list[idx].coupangCount = cCnt;
-        list[idx].coupangIncome = cInc;    // 수정: pure 수입
+        list[idx].coupangIncome = cInc;
         list[idx].coupangMission = cMis;
         list[idx].startOdo = startOdo;
         list[idx].endOdo = endOdo;
         list[idx].distance = dist;
         list[idx].totalCount = bCnt + cCnt;
-        list[idx].totalIncome = bInc + bMis + cInc + cMis; // 합계 시에만 수입+미션 합산
+        list[idx].totalIncome = bInc + bMis + cInc + cMis;
 
         Storage.set("HISTORY", list);
         alert(currentLang === 'ko' ? "기록이 수정되었습니다." : "Record updated.");
@@ -1261,7 +1270,6 @@
         }
       };
 
-      /* 💾 저장 센터 내보내기 시에도 (기본수입 + 미션) 합산이 맞도록 처리 */
       $("exportCsvBtn").onclick = () => {
         const history = Storage.get("HISTORY");
         if (history.length === 0) return alert(currentLang === 'ko' ? "내보낼 운행 기록이 없습니다." : "No history to export.");
