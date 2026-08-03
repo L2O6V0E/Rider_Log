@@ -1189,6 +1189,7 @@
         };
       }
 
+      /* [수정 완료 영역] btnSaveDetailEdit 버그 수정 */
       $("btnSaveDetailEdit").onclick = () => {
         if (!currentEditingId) return;
         const list = Storage.get("HISTORY");
@@ -1206,7 +1207,7 @@
 
         const startOdo = parseFloat($("editStartOdo").value) || 0;
         const endOdo = parseFloat($("editEndOdo").value) || 0;
-        const dist = (endOdo > startOdo) ? parseFloat((editOdo > startOdo) ? (endOdo - startOdo).toFixed(1) : 0) : 0;
+        const dist = (endOdo > startOdo) ? parseFloat((endOdo - startOdo).toFixed(1)) : 0;
 
         list[idx].rideMinutes = `${mTime}${t('unitMin')}`;
         list[idx].baeminCount = bCnt;
