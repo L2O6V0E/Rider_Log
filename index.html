@@ -555,15 +555,15 @@
       }
     }
 
-    const KEYS = { HISTORY: "RiderLog_History", EXPENSE: "RiderLog_Expenses" };
+    const KEYS = { HISTORY: "RiderLog_History", EXPENSE: "RiderLog_Expenses", CURRENT_RIDE: "RiderLog_CurrentRide" };
     const Storage = {
       get(key) {
         try {
           const data = localStorage.getItem(KEYS[key]);
-          return data ? JSON.parse(data) : [];
+          return data ? JSON.parse(data) : (key === "CURRENT_RIDE" ? null : []);
         } catch (e) {
           console.error("Read Storage Error:", e);
-          return [];
+          return key === "CURRENT_RIDE" ? null : [];
         }
       },
       set(key, data) {
@@ -582,6 +582,68 @@
     };
 
     const $ = (id) => document.getElementById(id);
+
+    /* 현재 입력 진행 상황 저장 함수 */
+    function saveCurrentRideState() {
+      const state = {
+        startTimestamp: startTimestamp ? startTimestamp.getTime() : null,
+        endTimestamp: endTimestamp ? endTimestamp.getTime() : null,
+        startTimeText: $("startTime").textContent,
+        endTimeText: $("endTime").textContent,
+        rideTimeText: $("rideTime").textContent,
+        statusText: $("status").textContent,
+        startOdometer: $("startOdometer").value,
+        endOdometer: $("endOdometer").value,
+        baeminCount: $("baeminCount").value,
+        baeminIncome: $("baeminIncome").value,
+        missionIncome: $("missionIncome").value,
+        coupangCount: $("coupangCount").value,
+        coupangIncome: $("coupangIncome").value,
+        coupangMissionIncome: $("coupangMissionIncome").value,
+        startPhotoData: startPhotoData,
+        endPhotoData: endPhotoData
+      };
+      Storage.set("CURRENT_RIDE", state);
+    }
+
+    /* 페이지 새로고침 시 기존 입력값 복원 함수 */
+    function restoreCurrentRideState() {
+      const state = Storage.get("CURRENT_RIDE");
+      if (!state) return;
+
+      if (state.startTimestamp) startTimestamp = new Date(state.startTimestamp);
+      if (state.endTimestamp) endTimestamp = new Date(state.endTimestamp);
+
+      if (state.startTimeText) $("startTime").textContent = state.startTimeText;
+      if (state.endTimeText) $("endTime").textContent = state.endTimeText;
+      if (state.rideTimeText) $("rideTime").textContent = state.rideTimeText;
+      if (state.statusText) $("status").textContent = state.statusText;
+
+      if (state.startOdometer) $("startOdometer").value = state.startOdometer;
+      if (state.endOdometer) $("endOdometer").value = state.endOdometer;
+
+      if (state.baeminCount) $("baeminCount").value = state.baeminCount;
+      if (state.baeminIncome) $("baeminIncome").value = state.baeminIncome;
+      if (state.missionIncome) $("missionIncome").value = state.missionIncome;
+
+      if (state.coupangCount) $("coupangCount").value = state.coupangCount;
+      if (state.coupangIncome) $("coupangIncome").value = state.coupangIncome;
+      if (state.coupangMissionIncome) $("coupangMissionIncome").value = state.coupangMissionIncome;
+
+      if (state.startPhotoData) {
+        startPhotoData = state.startPhotoData;
+        $("startPhotoPreview").innerHTML = `<img src="${startPhotoData}" class="photo-preview-img" alt="미리보기">`;
+        $("startPhotoPreview").querySelector("img").onclick = () => openPhotoModal(startPhotoData);
+      }
+
+      if (state.endPhotoData) {
+        endPhotoData = state.endPhotoData;
+        $("endPhotoPreview").innerHTML = `<img src="${endPhotoData}" class="photo-preview-img" alt="미리보기">`;
+        $("endPhotoPreview").querySelector("img").onclick = () => openPhotoModal(endPhotoData);
+      }
+
+      calculateSummary();
+    }
 
     function openPhotoModal(base64Img) {
       if (!base64Img) return;
@@ -694,6 +756,7 @@
       $("distance").value = "";
       $("totalIncomeDisplay").textContent = `0${t('unitWon')}`;
 
+      Storage.remove("CURRENT_RIDE");
       calculateMonthlySummary();
     }
 
@@ -739,6 +802,8 @@
           previewBox.innerHTML = `<img src="${compressedBase64}" class="photo-preview-img" alt="미리보기">`;
           previewBox.querySelector("img").onclick = () => openPhotoModal(compressedBase64);
 
+          saveCurrentRideState();
+
           if (window.Tesseract) {
             Tesseract.recognize(compressedBase64, 'eng', {
               logger: m => {
@@ -764,6 +829,7 @@
                 alert(currentLang === 'ko' ? "사진에서 숫자를 찾지 못했습니다. 수동으로 입력해 주세요." : "No numbers detected. Please enter manually.");
               }
               calculateSummary();
+              saveCurrentRideState();
             })
             .catch(err => {
               console.error("OCR Error:", err);
@@ -1053,6 +1119,7 @@
       if ($("expenseDate")) $("expenseDate").value = today;
 
       initFilterDropdowns();
+      restoreCurrentRideState();
       updateTexts();
       calculateMonthlySummary();
 
@@ -1060,7 +1127,10 @@
       setupOCR("endPhotoInput", "endOdometer", "endPhotoPreview", "end");
 
       document.querySelectorAll(".calc-trigger, #startOdometer, #endOdometer").forEach(el => {
-        el.addEventListener("input", calculateSummary);
+        el.addEventListener("input", () => {
+          calculateSummary();
+          saveCurrentRideState();
+        });
       });
 
       document.querySelectorAll(".manual-odo-calc").forEach(el => {
@@ -1084,6 +1154,7 @@
         startTimestamp = new Date();
         $("status").textContent = t("statusRunning");
         $("startTime").textContent = startTimestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        saveCurrentRideState();
       };
 
       $("endBtn").onclick = (e) => {
@@ -1096,6 +1167,7 @@
         const diffMin = Math.round((endTimestamp - startTimestamp) / (1000 * 60));
         $("rideTime").textContent = `${diffMin}${t('unitMin')}`;
         calculateSummary();
+        saveCurrentRideState();
       };
 
       $("summaryBtn").onclick = (e) => {
