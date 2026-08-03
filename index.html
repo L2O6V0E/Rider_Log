@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>RiderLog v0.9.1 (종소세 대응)</title>
+  <title>RiderLog v0.9.1</title>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -54,6 +54,14 @@
     .photo-preview-img { width: 100%; max-height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid #ccc; cursor: pointer; }
     .history-item { background: #fff; border: 1px solid #eee; border-radius: 8px; padding: 10px; margin-bottom: 8px; font-size: 0.95rem; }
     .footer { text-align: center; font-size: 0.9rem; color: #aaa; margin-top: 10px; }
+
+    /* 월 합계 전용 테이블 스타일 */
+    .month-summary-card { background-color: #f8f9fa; border-radius: 10px; padding: 10px; border: 1px solid #edf0f2; margin-bottom: 8px; }
+    .month-title { font-size: 0.95rem; font-weight: 700; color: #2d3748; margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+    .month-table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #cbd5e0; border-radius: 6px; overflow: hidden; text-align: center; }
+    .month-table th { background: #edf2f7; padding: 6px 2px; font-size: 0.85rem; border: 1px solid #cbd5e0; color: #4a5568; font-weight: 600; }
+    .month-table td { padding: 8px 2px; font-size: 0.9rem; font-weight: 700; border: 1px solid #cbd5e0; color: #2d3748; }
+    .month-footnote { font-size: 0.78rem; color: #718096; margin-top: 6px; line-height: 1.35; text-align: center; word-break: keep-all; }
 
     /* 데이터 저장 & 관리 센터 스타일 */
     .save-center-container { background: #f8f9fa; border-radius: 12px; border: 1px solid #edf0f2; padding: 12px; }
@@ -204,20 +212,29 @@
         </div>
       </section>
 
-      <section class="status-box">
-        <div class="row-inputs">
-          <div class="row-item text-center">
-            <p class="info-title" data-i18n="avgPrice">평균 단가</p>
-            <p class="info-value-sm" id="avgPrice">0원</p>
-          </div>
-          <div class="row-item text-center">
-            <p class="info-title" data-i18n="hourly">시급</p>
-            <p class="info-value-sm" id="hourPay">0원</p>
-          </div>
-          <div class="row-item text-center">
-            <p class="info-title" data-i18n="perKm">km당 수입</p>
-            <p class="info-value-sm" id="kmPay">0원</p>
-          </div>
+      <!-- 하단 월 합계 표 영역 -->
+      <section class="month-summary-card">
+        <div class="month-title">📌 <span data-i18n="monthSummaryTitle">*월 합계</span></div>
+        <table class="month-table">
+          <thead>
+            <tr>
+              <th data-i18n="thTotalNet">합계</th>
+              <th data-i18n="thAvgPrice">단가</th>
+              <th data-i18n="thHourly">시급</th>
+              <th data-i18n="thPerKm">KM</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td id="monthTotalNet">0원</td>
+              <td id="monthAvgPrice">0원</td>
+              <td id="monthHourPay">0원</td>
+              <td id="monthKmPay">0원</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="month-footnote" id="monthFootnote">
+          (※ 합계 = 당월 누적수입 0 - 당월 누적비용 0)
         </div>
       </section>
     </main>
@@ -439,7 +456,7 @@
       </div>
     </div>
 
-    <footer class="footer">Version Stable 0.9.1 (종소세 대응)</footer>
+    <footer class="footer">Version Stable 0.9.1</footer>
   </div>
 
   <script>
@@ -459,7 +476,8 @@
         statusLabel: "상태:", statusReady: "🟡 대기 중", statusRunning: "🟢 진행 중", statusEnded: "🔴 종료됨", 
         startTime: "시작 시간", endTime: "종료 시간", elapsedTime: "소요 시간", startOdo: "시작 계기판 (km)", endOdo: "종료 계기판 (km)", 
         baeminLabel: "🛵 배민", coupangLabel: "🚀 쿠팡", count: "총 건수", distance: "거리 (km)", totalIncome: "총수입", 
-        avgPrice: "평균 단가", hourly: "시급", perKm: "km당 수입", backMain: "← 메인으로",
+        monthSummaryTitle: "*월 합계", thTotalNet: "합계", thAvgPrice: "단가", thHourly: "시급", thPerKm: "KM",
+        backMain: "← 메인으로",
         addManualRecord: "➕ 수동 기록 추가", btnSaveRecord: "💾 저장하기", date: "날짜", timeMin: "시간(분)", manualStart: "시작 (km)", manualEnd: "종료 (km)",
         periodSelect: "📅 기간 선택", filterAll: "전체",
         selectedStats: "📊 선택 통계", btnViewDetail: "🔽 상세 보기", btnHideDetail: "🔼 접기", savedHistoryList: "📚 저장된 목록",
@@ -487,7 +505,8 @@
         statusLabel: "Status:", statusReady: "🟡 Ready", statusRunning: "🟢 Running", statusEnded: "🔴 Ended", 
         startTime: "Start Time", endTime: "End Time", elapsedTime: "Elapsed", startOdo: "Start Odo (km)", endOdo: "End Odo (km)", 
         baeminLabel: "🛵 Baemin", coupangLabel: "🚀 Coupang", count: "Total Count", distance: "Distance (km)", totalIncome: "Total Income", 
-        avgPrice: "Avg Price", hourly: "Hourly Pay", perKm: "Pay per km", backMain: "← Main Menu",
+        monthSummaryTitle: "*Monthly Total", thTotalNet: "Net Income", thAvgPrice: "Avg Price", thHourly: "Hourly Pay", thPerKm: "KM",
+        backMain: "← Main Menu",
         addManualRecord: "➕ Add Manual Record", btnSaveRecord: "💾 Save", date: "Date", timeMin: "Time (min)", manualStart: "Start (km)", manualEnd: "End (km)",
         periodSelect: "📅 Select Period", filterAll: "All",
         selectedStats: "📊 Statistics", btnViewDetail: "🔽 View Details", btnHideDetail: "🔼 Hide Details", savedHistoryList: "📚 Saved Records",
@@ -527,6 +546,7 @@
 
       updateHistoryCount();
       initFilterDropdowns();
+      calculateMonthlySummary();
       renderHistoryList();
       renderExpenseList();
       
@@ -569,6 +589,60 @@
       $("photoModal").style.display = "flex";
     }
 
+    /* 당월 누적 수입/비용 기반 월 합계 계산 함수 */
+    function calculateMonthlySummary() {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth() + 1;
+
+      const history = Storage.get("HISTORY");
+      const expenses = Storage.get("EXPENSE");
+
+      let monthIncome = 0;
+      let monthCount = 0;
+      let monthDist = 0;
+      let monthMinutes = 0;
+
+      history.forEach(item => {
+        if (!item.date) return;
+        const [y, m] = item.date.split('-').map(v => parseInt(v));
+        if (y === currentYear && m === currentMonth) {
+          monthIncome += Number(item.totalIncome || 0);
+          monthCount += Number(item.totalCount || 0);
+          monthDist += Number(item.distance || 0);
+          let mins = 0;
+          if (typeof item.rideMinutes === 'string') mins = parseInt(item.rideMinutes) || 0;
+          else if (typeof item.rideMinutes === 'number') mins = item.rideMinutes;
+          monthMinutes += mins;
+        }
+      });
+
+      let monthExpense = 0;
+      expenses.forEach(item => {
+        if (!item.date) return;
+        const [y, m] = item.date.split('-').map(v => parseInt(v));
+        if (y === currentYear && m === currentMonth) {
+          monthExpense += Number(item.amount || 0);
+        }
+      });
+
+      const netIncome = monthIncome - monthExpense;
+      const avgPrice = monthCount > 0 ? Math.round(netIncome / monthCount) : 0;
+      const hourly = monthMinutes > 0 ? Math.round(netIncome / (monthMinutes / 60)) : 0;
+      const perKm = monthDist > 0 ? Math.round(netIncome / monthDist) : 0;
+
+      $("monthTotalNet").textContent = `${netIncome.toLocaleString()}${t('unitWon')}`;
+      $("monthAvgPrice").textContent = `${avgPrice.toLocaleString()}${t('unitWon')}`;
+      $("monthHourPay").textContent = `${hourly.toLocaleString()}${t('unitWon')}`;
+      $("monthKmPay").textContent = `${perKm.toLocaleString()}${t('unitWon')}`;
+
+      if ($("monthFootnote")) {
+        $("monthFootnote").textContent = currentLang === 'ko'
+          ? `(※ 합계 = 당월 누적수입 ${monthIncome.toLocaleString()} - 당월 누적비용 ${monthExpense.toLocaleString()})`
+          : `(※ Net = Monthly Income ${monthIncome.toLocaleString()} - Monthly Expense ${monthExpense.toLocaleString()})`;
+      }
+    }
+
     function calculateSummary() {
       const bCnt = Number($("baeminCount").value) || 0;
       const bInc = Number($("baeminIncome").value) || 0;
@@ -586,26 +660,10 @@
 
       const startOdo = parseFloat($("startOdometer").value) || 0;
       const endOdo = parseFloat($("endOdometer").value) || 0;
-      let dist = 0;
       if (endOdo > startOdo) {
-        dist = parseFloat((endOdo - startOdo).toFixed(1));
-        $("distance").value = dist;
+        $("distance").value = parseFloat((endOdo - startOdo).toFixed(1));
       } else {
         $("distance").value = "";
-      }
-
-      const avg = totalCnt > 0 ? Math.round(totalInc / totalCnt) : 0;
-      const perKm = dist > 0 ? Math.round(totalInc / dist) : 0;
-
-      $("avgPrice").textContent = `${avg.toLocaleString()}${t('unitWon')}`;
-      $("kmPay").textContent = `${perKm.toLocaleString()}${t('unitWon')}`;
-
-      if (startTimestamp && endTimestamp) {
-        const hours = (endTimestamp - startTimestamp) / (1000 * 60 * 60);
-        if (hours > 0) {
-          const hourly = Math.round(totalInc / hours);
-          $("hourPay").textContent = `${hourly.toLocaleString()}${t('unitWon')}`;
-        }
       }
     }
 
@@ -635,9 +693,8 @@
       $("deliveryCount").textContent = `0${t('unitCount')}`;
       $("distance").value = "";
       $("totalIncomeDisplay").textContent = `0${t('unitWon')}`;
-      $("avgPrice").textContent = `0${t('unitWon')}`;
-      $("hourPay").textContent = `0${t('unitWon')}`;
-      $("kmPay").textContent = `0${t('unitWon')}`;
+
+      calculateMonthlySummary();
     }
 
     function compressImage(file, callback) {
@@ -775,7 +832,6 @@
       if (monthSelect.value === "") monthSelect.value = new Date().getMonth() + 1;
     }
 
-    /* 최근 날짜순(내림차순) 정렬 적용된 필터 함수 */
     function getFilteredHistory() {
       const list = Storage.get("HISTORY");
       let filtered = list;
@@ -797,7 +853,6 @@
         });
       }
 
-      // 최근 날짜순 정렬 (동일 날짜일 경우 최신 생성 id 기준)
       return filtered.sort((a, b) => {
         const dateDiff = new Date(b.date) - new Date(a.date);
         return dateDiff !== 0 ? dateDiff : (b.id || 0) - (a.id || 0);
@@ -930,7 +985,6 @@
       const container = $("expenseListArea");
       if (!container) return;
 
-      // 최근 날짜순 정렬
       expenses.sort((a, b) => new Date(b.date) - new Date(a.date));
 
       const totalExpense = expenses.reduce((sum, item) => sum + Number(item.amount || 0), 0);
@@ -977,6 +1031,7 @@
         const expenses = Storage.get("EXPENSE");
         expenses.splice(index, 1);
         Storage.set("EXPENSE", expenses);
+        calculateMonthlySummary();
         renderExpenseList();
       }
     };
@@ -999,6 +1054,7 @@
 
       initFilterDropdowns();
       updateTexts();
+      calculateMonthlySummary();
 
       setupOCR("startPhotoInput", "startOdometer", "startPhotoPreview", "start");
       setupOCR("endPhotoInput", "endOdometer", "endPhotoPreview", "end");
@@ -1088,6 +1144,7 @@
           if (Storage.set("HISTORY", historyList)) {
             updateHistoryCount();
             initFilterDropdowns();
+            calculateMonthlySummary();
             renderHistoryList();
             alert(currentLang === 'ko' ? "정산이 성공적으로 저장되었습니다!" : "Summary saved successfully!");
 
@@ -1126,6 +1183,7 @@
           alert(currentLang === 'ko' ? "비용 기록이 저장되었습니다." : "Expense record saved.");
           $("expenseAmount").value = "";
           $("expenseMemo").value = "";
+          calculateMonthlySummary();
           renderExpenseList();
         }
       };
@@ -1173,6 +1231,7 @@
 
           updateHistoryCount();
           initFilterDropdowns();
+          calculateMonthlySummary();
           renderHistoryList();
           alert(currentLang === 'ko' ? "수동 기록이 추가되었습니다." : "Manual record added.");
 
@@ -1189,7 +1248,6 @@
         };
       }
 
-      /* [수정 완료 영역] btnSaveDetailEdit 버그 수정 */
       $("btnSaveDetailEdit").onclick = () => {
         if (!currentEditingId) return;
         const list = Storage.get("HISTORY");
@@ -1226,6 +1284,7 @@
         alert(currentLang === 'ko' ? "기록이 수정되었습니다." : "Record updated.");
         $("historyDetailModal").style.display = "none";
         initFilterDropdowns();
+        calculateMonthlySummary();
         renderHistoryList();
       };
 
@@ -1237,6 +1296,7 @@
           Storage.set("HISTORY", list);
           updateHistoryCount();
           initFilterDropdowns();
+          calculateMonthlySummary();
           renderHistoryList();
           $("historyDetailModal").style.display = "none";
         }
@@ -1350,6 +1410,7 @@
             Storage.remove("HISTORY");
             updateHistoryCount();
             initFilterDropdowns();
+            calculateMonthlySummary();
             renderHistoryList();
             alert(currentLang === 'ko' ? "운행 기록이 모두 삭제되었습니다." : "All ride records deleted.");
           }
@@ -1360,6 +1421,7 @@
         $("clearExpenseBtn").onclick = () => {
           if (confirm(currentLang === 'ko' ? "정말로 모든 지출 내역을 삭제하시겠습니까?" : "Clear all expense records?")) {
             Storage.remove("EXPENSE");
+            calculateMonthlySummary();
             renderExpenseList();
             alert(currentLang === 'ko' ? "지출 기록이 모두 삭제되었습니다." : "All expense records deleted.");
           }
