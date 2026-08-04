@@ -115,8 +115,12 @@
             <button id="langToggleBtn" class="btn-lang-header" type="button">🌐 EN</button>
           </div>
         </div>
-        <p class="sub"><span data-i18n="subTitle">기록 및 관리</span> <span id="historyCountText">(저장된 기록: 0건)</span></p>
-      </header>
+        <p class="sub">
+          <span data-i18n="subTitle">기록 및 관리</span> 
+          <span id="historyCountText">(저장된 기록: 0건)</span>
+          <!-- 👇 요 자리에 날짜와 시간을 표시하는 span을 추가합니다 -->
+          <span id="currentClockText" style="margin-left: 8px; font-weight: 600; color: #555;"></span>
+        </p>
 
       <div class="btn-grid-group">
         <button id="startBtn" class="btn btn-start" type="button"><span class="icon">🚀</span><span data-i18n="start">시작</span></button>
@@ -214,7 +218,7 @@
 
       <!-- 하단 월 합계 표 영역 -->
       <section class="month-summary-card">
-        <div class="month-title">📌 <span data-i18n="monthSummaryTitle">*월 합계</span></div>
+        <div class="month-title">📌 <span id="monthlySummaryTitle" data-i18n="monthSummaryTitle">*월 합계</span></div>
         <table class="month-table">
           <thead>
             <tr>
@@ -234,7 +238,7 @@
           </tbody>
         </table>
         <div class="month-footnote" id="monthFootnote">
-          (※ 합계 = 당월 누적수입 0 - 당월 누적비용 0)
+          (※ 합계 = 당월 누적수입 - 당월 누적비용)
         </div>
       </section>
     </main>
@@ -403,11 +407,11 @@
 
     <!-- 히스토리 상세보기 및 수정 팝업 모달 -->
     <div id="historyDetailModal" class="modal-overlay">
-      <div class="modal-card">
-        <div class="modal-header">
-          <p id="modalDetailTitle" style="font-weight:bold; font-size:1.05rem; color:#333;">🔍 상세 정보</p>
-          <button id="detailModalCloseBtn" class="modal-btn-close" type="button" data-i18n="modalClose">✖ 닫기</button>
-        </div>
+       <div class="modal-card">
+         <div class="modal-header">
+           <p id="modalDetailTitle" style="font-weight:bold; font-size:1.05rem; color:#333;">🔍 상세 정보</p> 
+           <button id="detailModalCloseBtn" class="modal-btn-close" type="button" data-i18n="modalClose">✖ 닫기</button>
+         </div>
         
         <div style="display:flex; flex-direction:column; gap:8px;">
           <div>
@@ -657,6 +661,11 @@
       const currentYear = now.getFullYear();
       const currentMonth = now.getMonth() + 1;
 
+      // 👇 [여기 3줄 추가] 현재 월 숫자로 제목 자동 변경
+      if ($("monthlySummaryTitle")) {
+        $("monthlySummaryTitle").textContent = `${currentMonth}월 합계`;
+      }
+
       const history = Storage.get("HISTORY");
       const expenses = Storage.get("EXPENSE");
 
@@ -700,8 +709,8 @@
 
       if ($("monthFootnote")) {
         $("monthFootnote").textContent = currentLang === 'ko'
-          ? `(※ 합계 = 당월 누적수입 ${monthIncome.toLocaleString()} - 당월 누적비용 ${monthExpense.toLocaleString()})`
-          : `(※ Net = Monthly Income ${monthIncome.toLocaleString()} - Monthly Expense ${monthExpense.toLocaleString()})`;
+          ? `(※ 합계 = 당월 누적수입 - 당월 누적비용)`
+          : `(※ Net = Monthly Income - Monthly Expense)`;
       }
     }
 
@@ -1527,6 +1536,24 @@
       $("modalCloseBtn").onclick = () => { $("photoModal").style.display = "none"; };
       $("detailModalCloseBtn").onclick = () => { $("historyDetailModal").style.display = "none"; };
     });
+
+function updateClock() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      
+      const clockEl = document.getElementById("currentClockText");
+      if (clockEl) {
+        clockEl.textContent = `| ${year}-${month}-${day} ${hours}:${minutes}`;
+      }
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
   </script>
 </body>
 </html>
