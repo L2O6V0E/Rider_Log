@@ -104,7 +104,7 @@
     .stats-detail-box { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #90caf9; font-size: 0.9rem; color: #222; line-height: 1.6; }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-    <script>eruda.init();</script>
+  <script>eruda.init();</script>
 </head>
 <body>
   <div class="card">
@@ -333,13 +333,13 @@
         </div>
       </section>
 
-      <!-- 년/월 기간 선택 드롭다운 필터 ('일' 항목 제거) -->
+      <!-- 년/월 기간 선택 드롭다운 필터 -->
       <section class="status-box">
         <p class="info-title" style="font-weight: bold; color: #333;" data-i18n="periodSelect">📅 기간 선택</p>
         <div class="filter-dropdown-group">
           <select id="filterYearSelect"></select>
           <select id="filterMonthSelect"></select>
-          <button id="filterAllBtn" class="btn-filter-all" data-i18n="filterAll">당월 전체</button>
+          <button id="filterAllBtn" class="btn-filter-all" data-i18n="filterAll">전체</button>
         </div>
       </section>
 
@@ -469,7 +469,7 @@
     let endTimestamp = null;
     let startPhotoData = "";
     let endPhotoData = "";
-    let isCurrentMonthAllFilter = false;
+    let isSelectedMonthAllFilter = false;
     let currentEditingId = null;
 
     const i18nData = {
@@ -483,7 +483,7 @@
         monthSummaryTitle: "*월 합계", thTotalNet: "합계", thAvgPrice: "단가", thHourly: "시급", thPerKm: "KM",
         backMain: "← 메인으로",
         addManualRecord: "➕ 수동 기록 추가", btnSaveRecord: "💾 저장하기", date: "날짜", timeMin: "시간(분)", manualStart: "시작 (km)", manualEnd: "종료 (km)",
-        periodSelect: "📅 기간 선택", filterAll: "당월 전체",
+        periodSelect: "📅 기간 선택", filterAll: "전체",
         selectedStats: "📊 선택 통계", btnViewDetail: "🔽 상세 보기", btnHideDetail: "🔼 접기", savedHistoryList: "📚 저장된 목록",
         noHistoryMsg: "선택한 기간의 기록이 없습니다.", btnDetail: "상세보기",
         statTotal: "총 건수 / 총 수입", statDist: "총 거리 / km당 단가 / 평균 단가", statHourly: "시급", statSelPeriod: "선택 기간",
@@ -512,7 +512,7 @@
         monthSummaryTitle: "*Monthly Total", thTotalNet: "Net Income", thAvgPrice: "Avg Price", thHourly: "Hourly Pay", thPerKm: "KM",
         backMain: "← Main Menu",
         addManualRecord: "➕ Add Manual Record", btnSaveRecord: "💾 Save", date: "Date", timeMin: "Time (min)", manualStart: "Start (km)", manualEnd: "End (km)",
-        periodSelect: "📅 Select Period", filterAll: "This Month All",
+        periodSelect: "📅 Select Period", filterAll: "All",
         selectedStats: "📊 Statistics", btnViewDetail: "🔽 View Details", btnHideDetail: "🔼 Hide Details", savedHistoryList: "📚 Saved Records",
         noHistoryMsg: "No records found for the selected period.", btnDetail: "Details",
         statTotal: "Total Count / Total Income", statDist: "Total Dist / Pay per km / Avg Price", statHourly: "Hourly Pay", statSelPeriod: "Period",
@@ -891,40 +891,38 @@
       }
       monthSelect.innerHTML = monthHtml;
 
-      if (!isCurrentMonthAllFilter && prevY) {
+      if (!isSelectedMonthAllFilter && prevY) {
         yearSelect.value = prevY;
       } else {
         yearSelect.value = currentYear;
       }
 
-      if (!isCurrentMonthAllFilter && prevM) {
+      if (!isSelectedMonthAllFilter && prevM) {
         monthSelect.value = prevM;
       } else {
         monthSelect.value = currentMonth;
       }
     }
 
-    /* 🔍 기록 데이터 필터링 */
+/* 🔍 기록 데이터 필터링 */
     function getFilteredHistory() {
       const list = Storage.get("HISTORY");
-      const now = new Date();
-      const currentYear = now.getFullYear();
-      const currentMonth = now.getMonth() + 1;
+      const selY = $("filterYearSelect").value;
+      const selM = $("filterMonthSelect").value;
 
       let filtered = list;
 
-      if (isCurrentMonthAllFilter) {
-        // '당월 전체' 버튼 클릭 시: 이번 달 전체 출력
+      if (isSelectedMonthAllFilter) {
+        // '선택년전체' 버튼 클릭 시: 선택된 연도(selY) 기준 전체 월 데이터 필터링
         filtered = list.filter(item => {
           if (!item.date) return false;
-          const [y, m] = item.date.split('-').map(v => parseInt(v));
-          return y === currentYear && m === currentMonth;
+          const [y] = item.date.split('-').map(v => parseInt(v));
+          
+          // 월(m) 조건은 무시하고 선택된 연도(y)만 비교
+          return (selY === "ALL") || (parseInt(selY) === y);
         });
       } else {
-        // 드롭다운 선택 조건 검색
-        const selY = $("filterYearSelect").value;
-        const selM = $("filterMonthSelect").value;
-
+        // 드롭다운 기본 선택 조건 검색 (연도 & 월 조건 모두 충족)
         filtered = list.filter(item => {
           if (!item.date) return false;
           const [y, m] = item.date.split('-').map(v => parseInt(v));
@@ -980,12 +978,10 @@
       `;
 
       let periodLabel = t('filterAll');
-      if (!isCurrentMonthAllFilter) {
-        const sy = $("filterYearSelect").value;
-        const sm = $("filterMonthSelect").value;
-        periodLabel = `${sy !== 'ALL' ? sy + (currentLang === 'ko' ? '년 ' : ' ') : ''}${sm !== 'ALL' ? sm + (currentLang === 'ko' ? '월' : '') : ''}`.trim();
-        if (!periodLabel) periodLabel = t('filterAll');
-      }
+      const sy = $("filterYearSelect").value;
+      const sm = $("filterMonthSelect").value;
+      periodLabel = `${sy !== 'ALL' ? sy + (currentLang === 'ko' ? '년 ' : ' ') : ''}${sm !== 'ALL' ? sm + (currentLang === 'ko' ? '월' : '') : ''}`.trim();
+      if (!periodLabel) periodLabel = t('filterAll');
 
       $("statsDetailArea").innerHTML = `
         <div>📅 <strong>${t('statSelPeriod')}:</strong> ${periodLabel}</div>
@@ -1402,20 +1398,15 @@
       const dropdowns = ["filterYearSelect", "filterMonthSelect"];
       dropdowns.forEach(id => {
         $(id).onchange = () => {
-          isCurrentMonthAllFilter = false;
+          isSelectedMonthAllFilter = false;
           $("filterAllBtn").classList.remove("active");
           renderHistoryList();
         };
       });
 
       $("filterAllBtn").onclick = () => {
-        isCurrentMonthAllFilter = true;
+        isSelectedMonthAllFilter = true;
         $("filterAllBtn").classList.add("active");
-        
-        const now = new Date();
-        $("filterYearSelect").value = now.getFullYear();
-        $("filterMonthSelect").value = now.getMonth() + 1;
-        
         renderHistoryList();
       };
 
