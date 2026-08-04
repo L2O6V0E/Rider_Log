@@ -1167,17 +1167,19 @@
       };
 
       $("endBtn").onclick = (e) => {
-        if(e) e.preventDefault();
-        if (!startTimestamp) return alert(currentLang === 'ko' ? "먼저 [시작] 버튼을 눌러주세요." : "Please click [Start] first.");
-        endTimestamp = new Date();
-        $("status").textContent = t("statusEnded");
-        $("endTime").textContent = endTimestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+         if(e) e.preventDefault();
+         if (!startTimestamp) return alert(currentLang === 'ko' ? "먼저 [시작] 버튼을 눌러주세요." : "Please click [Start] first.");
+  
+         endTimestamp = new Date();
+         $("status").textContent = t("statusEnded");
+         $("endTime").textContent = endTimestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-        const diffMin = Math.round((endTimestamp - startTimestamp) / (1000 * 60));
-        $("rideTime").textContent = `${diffMin}${t('unitMin')}`;
-        calculateSummary();
-        saveCurrentRideState();
-      };
+         const diffMin = Math.round((endTimestamp - startTimestamp) / (1000 * 60));
+         $("rideTime").textContent = `${diffMin}${t('unitMin')}`;
+  
+         calculateSummary();
+         saveCurrentRideState();
+       };
 
       $("summaryBtn").onclick = (e) => {
         if(e) { e.preventDefault(); e.stopPropagation(); }
@@ -1322,6 +1324,7 @@
           renderHistoryList();
           alert(currentLang === 'ko' ? "수동 기록이 추가되었습니다." : "Manual record added.");
 
+          $("manualDate").value = new Date().toISOString().split('T')[0];
           $("manualRideMinutes").value = "";
           $("manualBaeminCount").value = "";
           $("manualBaeminIncome").value = "";
@@ -1486,7 +1489,9 @@
           else if (i.category === "정비비") taxCategory = "차량수리비";
           else taxCategory = "기타잡비";
 
-          csv += `"${i.date}","${taxCategory}",${i.amount},"${i.memo || ''}"\n`;
+          // 따옴표 이스케이프 처리 추가
+          const safeMemo = (i.memo || '').replace(/"/g, '""');
+          csv += `"${i.date}","${taxCategory}",${i.amount},"${safeMemo}"\n`;
         });
         downloadCSV(csv, `RiderLog_필요경비_${today}.csv`);
       };
