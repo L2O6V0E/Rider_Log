@@ -393,6 +393,16 @@
         </div>
       </section>
 
+      <!-- ⛽ 비용 기간 선택 필터 -->
+      <section class="status-box">
+        <p class="info-title" style="font-weight: bold; color: #333;" data-i18n="periodSelect">📅 기간 선택</p>
+        <div class="filter-dropdown-group">
+          <select id="filterExpenseYearSelect"></select>
+          <select id="filterExpenseMonthSelect"></select>
+          <button id="filterExpenseAllBtn" class="btn-filter-all" data-i18n="filterAll">전체</button>
+        </div>
+      </section>
+
       <div id="expenseListArea"></div>
     </section>
 
@@ -470,6 +480,7 @@
     let startPhotoData = "";
     let endPhotoData = "";
     let isSelectedMonthAllFilter = false;
+    let isSelectedExpenseAllFilter = false;
     let currentEditingId = null;
 
     const i18nData = {
@@ -550,6 +561,7 @@
 
       updateHistoryCount();
       initFilterDropdowns();
+      initExpenseFilterDropdowns();
       calculateMonthlySummary();
       renderHistoryList();
       renderExpenseList();
@@ -904,7 +916,55 @@
       }
     }
 
-/* 🔍 기록 데이터 필터링 */
+    /* ⛽ 비용 필터 드롭다운 초기화 */
+    function initExpenseFilterDropdowns() {
+      const expenses = Storage.get("EXPENSE");
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth() + 1;
+
+      const yearSelect = $("filterExpenseYearSelect");
+      const monthSelect = $("filterExpenseMonthSelect");
+
+      if (!yearSelect || !monthSelect) return;
+
+      const prevY = yearSelect.value;
+      const prevM = monthSelect.value;
+
+      const years = new Set([currentYear]);
+      expenses.forEach(i => {
+        if (i.date) {
+          const y = parseInt(i.date.split('-')[0]);
+          if (y) years.add(y);
+        }
+      });
+
+      let yearHtml = `<option value="ALL">${t('optAllYears')}</option>`;
+      Array.from(years).sort((a, b) => b - a).forEach(y => {
+        yearHtml += `<option value="${y}">${y}${currentLang === 'ko' ? '년' : ''}</option>`;
+      });
+      yearSelect.innerHTML = yearHtml;
+
+      let monthHtml = `<option value="ALL">${t('optAllMonths')}</option>`;
+      for (let m = 1; m <= 12; m++) {
+        monthHtml += `<option value="${m}">${m}${currentLang === 'ko' ? '월' : ''}</option>`;
+      }
+      monthSelect.innerHTML = monthHtml;
+
+      if (!isSelectedExpenseAllFilter && prevY) {
+        yearSelect.value = prevY;
+      } else {
+        yearSelect.value = currentYear;
+      }
+
+      if (!isSelectedExpenseAllFilter && prevM) {
+        monthSelect.value = prevM;
+      } else {
+        monthSelect.value = currentMonth;
+      }
+    }
+
+    /* 🔍 기록 데이터 필터링 */
     function getFilteredHistory() {
       const list = Storage.get("HISTORY");
       const selY = $("filterYearSelect").value;
@@ -913,16 +973,12 @@
       let filtered = list;
 
       if (isSelectedMonthAllFilter) {
-        // '선택년전체' 버튼 클릭 시: 선택된 연도(selY) 기준 전체 월 데이터 필터링
         filtered = list.filter(item => {
           if (!item.date) return false;
           const [y] = item.date.split('-').map(v => parseInt(v));
-          
-          // 월(m) 조건은 무시하고 선택된 연도(y)만 비교
           return (selY === "ALL") || (parseInt(selY) === y);
         });
       } else {
-        // 드롭다운 기본 선택 조건 검색 (연도 & 월 조건 모두 충족)
         filtered = list.filter(item => {
           if (!item.date) return false;
           const [y, m] = item.date.split('-').map(v => parseInt(v));
@@ -938,6 +994,35 @@
         const dateDiff = new Date(b.date) - new Date(a.date);
         return dateDiff !== 0 ? dateDiff : (b.id || 0) - (a.id || 0);
       });
+    }
+
+    /* 🔍 비용 데이터 필터링 */
+    function getFilteredExpenses() {
+      const list = Storage.get("EXPENSE");
+      const selY = $("filterExpenseYearSelect").value;
+      const selM = $("filterExpenseMonthSelect").value;
+
+      let filtered = list;
+
+      if (isSelectedExpenseAllFilter) {
+        filtered = list.filter(item => {
+          if (!item.date) return false;
+          const [y] = item.date.split('-').map(v => parseInt(v));
+          return (selY === "ALL") || (parseInt(selY) === y);
+        });
+      } else {
+        filtered = list.filter(item => {
+          if (!item.date) return false;
+          const [y, m] = item.date.split('-').map(v => parseInt(v));
+
+          if (selY !== "ALL" && parseInt(selY) !== y) return false;
+          if (selM !== "ALL" && parseInt(selM) !== m) return false;
+
+          return true;
+        });
+      }
+
+      return filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
     }
 
     function renderHistoryList() {
@@ -1059,26 +1144,24 @@
     };
 
     function renderExpenseList() {
-      const expenses = Storage.get("EXPENSE");
+      const filteredExpenses = getFilteredExpenses();
       const container = $("expenseListArea");
       if (!container) return;
 
-      expenses.sort((a, b) => new Date(b.date) - new Date(a.date));
+      const totalExpense = filteredExpenses.reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
-      const totalExpense = expenses.reduce((sum, item) => sum + Number(item.amount || 0), 0);
-
-      if (expenses.length === 0) {
+      if (filteredExpenses.length === 0) {
         container.innerHTML = `<div class="status-box text-center" style="padding:15px; color:#888;">${t('noExpenseMsg')}</div>`;
       } else {
         let html = `
           <section class="status-box">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-              <p class="info-title" style="font-weight:bold; font-size:1rem; color:#333;">${t('expenseListTitle')} (${expenses.length})</p>
+              <p class="info-title" style="font-weight:bold; font-size:1rem; color:#333;">${t('expenseListTitle')} (${filteredExpenses.length})</p>
               <strong style="color:#c62828;">${t('totalExpense')} ${totalExpense.toLocaleString()}${t('unitWon')}</strong>
             </div>
         `;
 
-        expenses.forEach((item, index) => {
+        filteredExpenses.forEach((item) => {
           let categoryLabel = item.category;
           if (item.category === "주유비") categoryLabel = t('optFuel');
           else if (item.category === "정비비") categoryLabel = t('optMaint');
@@ -1093,7 +1176,7 @@
               </div>
               <div style="text-align:right;">
                 <div style="font-weight:bold; color:#c62828; margin-bottom:2px;">-${Number(item.amount).toLocaleString()}${t('unitWon')}</div>
-                <button class="btn-del" onclick="deleteExpense(${index})">${t('btnDelete')}</button>
+                <button class="btn-del" onclick="deleteExpenseById(${item.id})">${t('btnDelete')}</button>
               </div>
             </div>
           `;
@@ -1104,11 +1187,12 @@
       }
     }
 
-    window.deleteExpense = function(index) {
+    window.deleteExpenseById = function(id) {
       if (confirm(currentLang === 'ko' ? "이 지출 내역을 삭제하시겠습니까?" : "Delete this expense record?")) {
-        const expenses = Storage.get("EXPENSE");
-        expenses.splice(index, 1);
+        let expenses = Storage.get("EXPENSE");
+        expenses = expenses.filter(x => x.id !== id);
         Storage.set("EXPENSE", expenses);
+        initExpenseFilterDropdowns();
         calculateMonthlySummary();
         renderExpenseList();
       }
@@ -1131,6 +1215,7 @@
       if ($("expenseDate")) $("expenseDate").value = today;
 
       initFilterDropdowns();
+      initExpenseFilterDropdowns();
       restoreCurrentRideState();
       updateTexts();
       calculateMonthlySummary();
@@ -1275,6 +1360,7 @@
           alert(currentLang === 'ko' ? "비용 기록이 저장되었습니다." : "Expense record saved.");
           $("expenseAmount").value = "";
           $("expenseMemo").value = "";
+          initExpenseFilterDropdowns();
           calculateMonthlySummary();
           renderExpenseList();
         }
@@ -1410,6 +1496,22 @@
         renderHistoryList();
       };
 
+      /* 비용 필터 이벤트 바인딩 */
+      const expenseDropdowns = ["filterExpenseYearSelect", "filterExpenseMonthSelect"];
+      expenseDropdowns.forEach(id => {
+        $(id).onchange = () => {
+          isSelectedExpenseAllFilter = false;
+          $("filterExpenseAllBtn").classList.remove("active");
+          renderExpenseList();
+        };
+      });
+
+      $("filterExpenseAllBtn").onclick = () => {
+        isSelectedExpenseAllFilter = true;
+        $("filterExpenseAllBtn").classList.add("active");
+        renderExpenseList();
+      };
+
       $("toggleDetailStatsBtn").onclick = () => {
         const detailArea = $("statsDetailArea");
         if (detailArea.style.display === "none" || detailArea.style.display === "") {
@@ -1512,6 +1614,7 @@
         $("clearExpenseBtn").onclick = () => {
           if (confirm(currentLang === 'ko' ? "정말로 모든 지출 내역을 삭제하시겠습니까?" : "Clear all expense records?")) {
             Storage.remove("EXPENSE");
+            initExpenseFilterDropdowns();
             calculateMonthlySummary();
             renderExpenseList();
             alert(currentLang === 'ko' ? "지출 기록이 모두 삭제되었습니다." : "All expense records deleted.");
@@ -1520,7 +1623,12 @@
       }
 
       $("saveCenterBtn").onclick = () => { $("mainPage").hidden = true; $("saveCenterPage").hidden = false; };
-      $("expenseBtn").onclick = () => { $("mainPage").hidden = true; $("expensePage").hidden = false; renderExpenseList(); };
+      $("expenseBtn").onclick = () => { 
+        $("mainPage").hidden = true; 
+        $("expensePage").hidden = false; 
+        initExpenseFilterDropdowns();
+        renderExpenseList(); 
+      };
       $("historyBtn").onclick = () => { $("mainPage").hidden = true; $("historyPage").hidden = false; renderHistoryList(); };
 
       document.querySelectorAll(".back-to-main").forEach(b => {
